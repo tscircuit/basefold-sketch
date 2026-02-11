@@ -149,7 +149,7 @@ export class Sketch {
 
     const points = this.collectPoints()
     if (points.length === 0) {
-      return '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"></svg>'
+      return '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect x="0" y="0" width="100" height="100" fill="white" /></svg>'
     }
 
     let minX = Infinity
@@ -178,6 +178,7 @@ export class Sketch {
 
     return `
 <svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+  <rect x="0" y="0" width="${w}" height="${h}" fill="white" />
   <g fill="none" stroke="black" stroke-width="${strokeWidth}">
     ${body}
   </g>

@@ -20,6 +20,7 @@
     "dev": "tsup src/index.ts --format esm,cjs --dts --watch"
   },
   "devDependencies": {
+    "bun-match-svg": "^0.0.15",
     "tsup": "^8.5.1",
     "typescript": "^5.9.3"
   }
