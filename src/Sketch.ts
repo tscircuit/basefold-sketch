@@ -1,11 +1,5 @@
-import type {
-  BuildContext,
-  Constraint,
-  Point,
-  Residual,
-  Shape,
-  SvgTransform,
-} from "./core"
+import type { BuildContext, Constraint, Point, Residual, Shape } from "./core"
+import { createSvgFromSketch } from "./createSvgFromSketch"
 import { type SolveOptions, solveLM } from "./solver/lm"
 
 function isShape(x: unknown): x is Shape {
@@ -144,44 +138,12 @@ export class Sketch {
   }
 
   svg(opts?: { margin?: number; strokeWidth?: number }): string {
-    const margin = opts?.margin ?? 10
-    const strokeWidth = opts?.strokeWidth ?? 2
-
     const points = this.collectPoints()
-    if (points.length === 0) {
-      return '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect x="0" y="0" width="100" height="100" fill="white" /></svg>'
-    }
-
-    let minX = Infinity
-    let minY = Infinity
-    let maxX = -Infinity
-    let maxY = -Infinity
-    for (const p of points) {
-      if (p.x < minX) minX = p.x
-      if (p.y < minY) minY = p.y
-      if (p.x > maxX) maxX = p.x
-      if (p.y > maxY) maxY = p.y
-    }
-
-    const w = maxX - minX + 2 * margin
-    const h = maxY - minY + 2 * margin
-
-    const t: SvgTransform = {
-      x: (x) => x - minX + margin,
-      y: (y) => y - minY + margin,
-    }
-
-    let body = ""
-    for (const shape of this.shapes.values()) {
-      body += shape.toSvg(t)
-    }
-
-    return `
-<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
-  <rect x="0" y="0" width="${w}" height="${h}" fill="white" />
-  <g fill="none" stroke="black" stroke-width="${strokeWidth}">
-    ${body}
-  </g>
-</svg>`.trim()
+    return createSvgFromSketch({
+      points,
+      shapes: this.shapes.values(),
+      margin: opts?.margin,
+      strokeWidth: opts?.strokeWidth,
+    })
   }
 }

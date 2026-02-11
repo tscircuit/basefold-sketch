@@ -4,20 +4,17 @@ import { constraints, Sketch, shapes } from "../src/index"
 type XY = { x: number; y: number }
 
 const offset = 20
-const canvasOffsetX = 50
-const canvasOffsetY = 50
+const margin = 50
 const arrowLength = 8
 const arrowHalfWidth = 4
 
-const rectStroke = "#111"
 const constraintStroke = "#8a8a8a"
 const constraintText = "#666"
 
-const formatPoint = (p: XY): string =>
-  `${p.x + canvasOffsetX},${p.y + canvasOffsetY}`
+const pointText = (p: XY): string => `${p.x},${p.y}`
 
 const line = (a: XY, b: XY, stroke: string): string =>
-  `<line x1="${a.x + canvasOffsetX}" y1="${a.y + canvasOffsetY}" x2="${b.x + canvasOffsetX}" y2="${b.y + canvasOffsetY}" stroke="${stroke}" />`
+  `<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" stroke="${stroke}" />`
 
 const midpoint = (a: XY, b: XY): XY => ({
   x: (a.x + b.x) / 2,
@@ -36,7 +33,7 @@ const dot = (a: XY, b: XY): number => a.x * b.x + a.y * b.y
 const normalLeft = (u: XY): XY => ({ x: -u.y, y: u.x })
 
 const triangle = (a: XY, b: XY, c: XY, fill: string): string =>
-  `<polygon points="${formatPoint(a)} ${formatPoint(b)} ${formatPoint(c)}" fill="${fill}" />`
+  `<polygon points="${pointText(a)} ${pointText(b)} ${pointText(c)}" fill="${fill}" />`
 
 const dimensionGeometry = (a: XY, b: XY) => {
   const u = normalize(sub(b, a))
@@ -99,6 +96,14 @@ test("README drawing snapshot", async () => {
   const br = rectangle.points.bottomRight
   const bl = rectangle.points.bottomLeft
 
+  const minX = Math.min(tl.x, tr.x, br.x, bl.x)
+  const minY = Math.min(tl.y, tr.y, br.y, bl.y)
+
+  const toCanvas = (p: XY): XY => ({
+    x: p.x - minX + margin,
+    y: p.y - minY + margin,
+  })
+
   const topDelta = orientedOffset(tl, tr, bl)
   const topA = add(tl, topDelta)
   const topB = add(tr, topDelta)
@@ -111,27 +116,27 @@ test("README drawing snapshot", async () => {
   const leftLabel = add(midpoint(leftA, leftB), mul(normalize(leftDelta), 12))
   const leftDim = dimensionGeometry(leftA, leftB)
 
-  const svg = `
-<svg xmlns="http://www.w3.org/2000/svg" width="220" height="220" viewBox="0 0 220 220">
-  <rect x="0" y="0" width="220" height="220" fill="white" />
-  <g fill="none" stroke-width="2">
-    <polygon points="${[formatPoint(tl), formatPoint(tr), formatPoint(br), formatPoint(bl)].join(" ")}" stroke="${rectStroke}" />
-    ${line(tl, topA, constraintStroke)}
-    ${line(tr, topB, constraintStroke)}
-    ${line(topDim.shaftStart, topDim.shaftEnd, constraintStroke)}
-    ${line(tl, leftA, constraintStroke)}
-    ${line(bl, leftB, constraintStroke)}
-    ${line(leftDim.shaftStart, leftDim.shaftEnd, constraintStroke)}
-  </g>
-  ${triangle(topDim.startTip, topDim.startBase1, topDim.startBase2, constraintStroke)}
-  ${triangle(topDim.endTip, topDim.endBase1, topDim.endBase2, constraintStroke)}
-  ${triangle(leftDim.startTip, leftDim.startBase1, leftDim.startBase2, constraintStroke)}
-  ${triangle(leftDim.endTip, leftDim.endBase1, leftDim.endBase2, constraintStroke)}
-  <g fill="${constraintText}" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="12" text-anchor="middle" dominant-baseline="middle">
-    <text x="${topLabel.x + canvasOffsetX}" y="${topLabel.y + canvasOffsetY}">100</text>
-    <text x="${leftLabel.x + canvasOffsetX}" y="${leftLabel.y + canvasOffsetY}">100</text>
-  </g>
-</svg>`.trim()
+  const baseSvg = sketch.svg({ margin })
+
+  const overlay = `
+<g fill="none" stroke-width="2">
+  ${line(toCanvas(tl), toCanvas(topA), constraintStroke)}
+  ${line(toCanvas(tr), toCanvas(topB), constraintStroke)}
+  ${line(toCanvas(topDim.shaftStart), toCanvas(topDim.shaftEnd), constraintStroke)}
+  ${line(toCanvas(tl), toCanvas(leftA), constraintStroke)}
+  ${line(toCanvas(bl), toCanvas(leftB), constraintStroke)}
+  ${line(toCanvas(leftDim.shaftStart), toCanvas(leftDim.shaftEnd), constraintStroke)}
+</g>
+${triangle(toCanvas(topDim.startTip), toCanvas(topDim.startBase1), toCanvas(topDim.startBase2), constraintStroke)}
+${triangle(toCanvas(topDim.endTip), toCanvas(topDim.endBase1), toCanvas(topDim.endBase2), constraintStroke)}
+${triangle(toCanvas(leftDim.startTip), toCanvas(leftDim.startBase1), toCanvas(leftDim.startBase2), constraintStroke)}
+${triangle(toCanvas(leftDim.endTip), toCanvas(leftDim.endBase1), toCanvas(leftDim.endBase2), constraintStroke)}
+<g fill="${constraintText}" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="12" text-anchor="middle" dominant-baseline="middle">
+  <text x="${toCanvas(topLabel).x}" y="${toCanvas(topLabel).y}">100</text>
+  <text x="${toCanvas(leftLabel).x}" y="${toCanvas(leftLabel).y}">100</text>
+</g>`.trim()
+
+  const svg = baseSvg.replace("</svg>", `${overlay}\n</svg>`)
 
   await expect(svg).toMatchSvgSnapshot(import.meta.path)
 })
