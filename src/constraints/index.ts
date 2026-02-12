@@ -1,3 +1,4 @@
+export { Coincident } from "./Coincident"
 export { Distance } from "./Distance"
 export { FixedPoint } from "./FixedPoint"
 export { FixedX } from "./FixedX"
