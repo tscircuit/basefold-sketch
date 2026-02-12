@@ -1,7 +1,7 @@
 import { expect, test } from "bun:test"
 import { constraints, Sketch, shapes } from "../src/index"
 
-test("relative rectangles snapshot", async () => {
+test("relative rectangles snapshot 02", async () => {
   const sketch = new Sketch()
   const left = new shapes.Rectangle({
     name: "R1",
@@ -30,17 +30,9 @@ test("relative rectangles snapshot", async () => {
   )
 
   sketch.add(
-    new constraints.Distance({
-      point1: "R2.topLeft",
-      point2: "R1.topRight",
-      distance: 40,
-    }),
-  )
-
-  sketch.add(
-    new constraints.Distance({
-      point1: "R2.bottomLeft",
-      point2: "R1.bottomRight",
+    new constraints.PerpendicularDistance({
+      edge1: "R1.right",
+      edge2: "R2.left",
       distance: 40,
     }),
   )
