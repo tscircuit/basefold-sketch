@@ -38,3 +38,5 @@ CLAUDE.md
 .vscode
 package-lock.json
 bun.lock
+
+*.diff.png
