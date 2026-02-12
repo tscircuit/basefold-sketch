@@ -1,4 +1,10 @@
-import type { BuildContext, Constraint, Point, Residual } from "../../core"
+import type {
+  BuildContext,
+  Constraint,
+  ConstraintSvgContext,
+  Point,
+  Residual,
+} from "../../core"
 
 export class FixedSegmentLength implements Constraint {
   constructor(
@@ -21,5 +27,16 @@ export class FixedSegmentLength implements Constraint {
         return dx * dx + dy * dy - d2
       },
     ]
+  }
+
+  toSvg(ctx: ConstraintSvgContext): string {
+    const x1 = ctx.transform.x(this.p1.x)
+    const y1 = ctx.transform.y(this.p1.y)
+    const x2 = ctx.transform.x(this.p2.x)
+    const y2 = ctx.transform.y(this.p2.y)
+    const tx = (x1 + x2) / 2
+    const ty = (y1 + y2) / 2 - 10
+
+    return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#2a9d8f" stroke-width="1.5" stroke-dasharray="4 3" /><text x="${tx}" y="${ty}" fill="#2a9d8f" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="10" text-anchor="middle">${this.distance}</text>`
   }
 }

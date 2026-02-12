@@ -1,2 +1,4 @@
 export { Distance } from "./Distance"
-export { FixedPoint, FixedX, FixedY } from "./Fixed"
+export { FixedPoint } from "./FixedPoint"
+export { FixedX } from "./FixedX"
+export { FixedY } from "./FixedY"

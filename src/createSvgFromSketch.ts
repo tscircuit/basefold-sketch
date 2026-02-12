@@ -1,8 +1,16 @@
-import type { Point, Shape, SvgTransform } from "./core"
+import type {
+  BuildContext,
+  Constraint,
+  Point,
+  Shape,
+  SvgTransform,
+} from "./core"
 
 export interface CreateSvgFromSketchOptions {
   points: Point[]
   shapes: Iterable<Shape>
+  constraints?: Iterable<Constraint>
+  buildContext?: BuildContext
   margin?: number
   strokeWidth?: number
 }
@@ -41,11 +49,24 @@ export function createSvgFromSketch(
     body += shape.toSvg(t)
   }
 
+  let constraintsSvg = ""
+  if (options.constraints && options.buildContext) {
+    for (const constraint of options.constraints) {
+      if (constraint.toSvg) {
+        constraintsSvg += constraint.toSvg({
+          resolvePoint: options.buildContext.resolvePoint,
+          transform: t,
+        })
+      }
+    }
+  }
+
   return `
 <svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
   <rect x="0" y="0" width="${w}" height="${h}" fill="white" />
   <g fill="none" stroke="black" stroke-width="${strokeWidth}">
     ${body}
   </g>
+  ${constraintsSvg}
 </svg>`.trim()
 }

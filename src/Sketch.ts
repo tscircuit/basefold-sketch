@@ -80,6 +80,17 @@ export class Sketch {
     return pts
   }
 
+  private collectConstraints(): Constraint[] {
+    const all: Constraint[] = []
+
+    for (const shape of this.shapes.values()) {
+      all.push(...shape.internalConstraints())
+    }
+
+    all.push(...this.userConstraints)
+    return all
+  }
+
   async solve(options: SolveOptions = {}): Promise<void> {
     const points = this.collectPoints()
 
@@ -97,16 +108,7 @@ export class Sketch {
     }
 
     const residuals: Residual[] = []
-
-    // Shape internal constraints first.
-    for (const shape of this.shapes.values()) {
-      for (const c of shape.internalConstraints()) {
-        residuals.push(...c.buildResiduals(ctx))
-      }
-    }
-
-    // Then user constraints.
-    for (const c of this.userConstraints) {
+    for (const c of this.collectConstraints()) {
       residuals.push(...c.buildResiduals(ctx))
     }
 
@@ -139,9 +141,15 @@ export class Sketch {
 
   svg(opts?: { margin?: number; strokeWidth?: number }): string {
     const points = this.collectPoints()
+    const ctx: BuildContext = {
+      resolvePoint: (ref: string) => this.resolvePoint(ref),
+    }
+
     return createSvgFromSketch({
       points,
       shapes: this.shapes.values(),
+      constraints: this.collectConstraints(),
+      buildContext: ctx,
       margin: opts?.margin,
       strokeWidth: opts?.strokeWidth,
     })

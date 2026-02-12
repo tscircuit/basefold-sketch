@@ -14,9 +14,17 @@ export interface BuildContext {
   resolvePoint(ref: string): Point
 }
 
+export interface ConstraintSvgContext {
+  resolvePoint(ref: string): Point
+  transform: SvgTransform
+}
+
 export interface Constraint {
   // Returns one or more scalar residual equations f(vars) = 0.
   buildResiduals(ctx: BuildContext): Residual[]
+
+  // Emits SVG elements representing this constraint (optional).
+  toSvg?(ctx: ConstraintSvgContext): string
 }
 
 export interface SvgTransform {

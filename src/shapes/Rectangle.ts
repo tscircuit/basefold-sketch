@@ -1,73 +1,8 @@
-import type {
-  BuildContext,
-  Constraint,
-  Point,
-  Residual,
-  Shape,
-  SvgTransform,
-} from "../core"
+import type { Constraint, Point, Shape, SvgTransform } from "../core"
 import { Point as SketchPoint } from "../core"
 import { FixedSegmentLength } from "./constraints/FixedSegmentLength"
-
-class ParallelogramClosure implements Constraint {
-  constructor(
-    private tl: Point,
-    private tr: Point,
-    private bl: Point,
-    private br: Point,
-  ) {}
-
-  buildResiduals(_ctx: BuildContext): Residual[] {
-    const tl = this.tl
-    const tr = this.tr
-    const bl = this.bl
-    const br = this.br
-
-    return [
-      (vars) => {
-        const itl = tl.__varIndex!
-        const itr = tr.__varIndex!
-        const ibl = bl.__varIndex!
-        const ibr = br.__varIndex!
-        return vars[ibr] - (vars[itr] + vars[ibl] - vars[itl])
-      },
-      (vars) => {
-        const itl = tl.__varIndex!
-        const itr = tr.__varIndex!
-        const ibl = bl.__varIndex!
-        const ibr = br.__varIndex!
-        return vars[ibr + 1] - (vars[itr + 1] + vars[ibl + 1] - vars[itl + 1])
-      },
-    ]
-  }
-}
-
-class PerpendicularAt implements Constraint {
-  constructor(
-    private a: Point,
-    private b: Point,
-    private c: Point,
-  ) {}
-
-  buildResiduals(_ctx: BuildContext): Residual[] {
-    const a = this.a
-    const b = this.b
-    const c = this.c
-
-    return [
-      (vars) => {
-        const ia = a.__varIndex!
-        const ib = b.__varIndex!
-        const ic = c.__varIndex!
-        const abx = vars[ib] - vars[ia]
-        const aby = vars[ib + 1] - vars[ia + 1]
-        const acx = vars[ic] - vars[ia]
-        const acy = vars[ic + 1] - vars[ia + 1]
-        return abx * acx + aby * acy
-      },
-    ]
-  }
-}
+import { ParallelogramClosure } from "./constraints/ParallelogramClosure"
+import { PerpendicularAt } from "./constraints/PerpendicularAt"
 
 export class Rectangle implements Shape {
   name: string
