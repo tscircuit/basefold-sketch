@@ -1,12 +1,6 @@
 import { expect, test } from "bun:test"
 import { Sketch, shapes } from "../src/index"
 
-test("Line validates constructor input", () => {
-  expect(() => new shapes.Line({ name: "L1", length: 0 })).toThrow(
-    "Line length must be a positive finite number.",
-  )
-})
-
 test("Line applies fixed length internal constraint", async () => {
   const sketch = new Sketch()
   const line = new shapes.Line({

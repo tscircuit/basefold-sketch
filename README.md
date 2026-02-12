@@ -68,3 +68,22 @@ sketch.add(
 
 await sketch.solve()
 ```
+
+```tsx
+import { Sketch, constraints, shapes } from "@basefold/sketch"
+
+const sketch = new Sketch()
+
+const free = shapes.Line({ length: 120 })
+const horizontal = shapes.Line({ horizontal: true, length: 80 })
+const vertical = true
+const upright = shapes.Line({ vertical, length: 60 })
+
+sketch.add(free)
+sketch.add(horizontal)
+sketch.add(upright)
+sketch.add(new constraints.Horizontal({ line: horizontal.name }))
+sketch.add(new constraints.Vertical({ line: upright.name }))
+
+await sketch.solve()
+```

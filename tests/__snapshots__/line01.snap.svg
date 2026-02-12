@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="100" viewBox="0 0 120 100">
+  <rect x="0" y="0" width="120" height="100" fill="white" />
+  <g fill="none" stroke="black" stroke-width="2">
+    <line x1="50" y1="50" x2="70" y2="50" />
+  </g>
+  <line x1="50" y1="50" x2="70" y2="50" stroke="#2a9d8f" stroke-width="1.5" stroke-dasharray="4 3" /><text x="60" y="40" fill="#2a9d8f" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="10" text-anchor="middle">20</text>
+</svg>
