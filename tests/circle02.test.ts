@@ -1,12 +1,6 @@
 import { expect, test } from "bun:test"
 import { constraints, Sketch, shapes } from "../src/index"
 
-test("Circle validates constructor input", () => {
-  expect(() => new shapes.Circle({ name: "C1", radius: 0 })).toThrow(
-    "Circle radius must be a positive finite number.",
-  )
-})
-
 test("Circle applies fixed radius internal constraint", async () => {
   const sketch = new Sketch()
   const circle = new shapes.Circle({

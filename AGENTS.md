@@ -39,6 +39,7 @@ Guidance for coding agents working in `@basefold/sketch`.
   - `bun test tests/readme-drawing.test.ts -t "README drawing snapshot"`
 
 Notes:
+
 - Test preload is configured in `bunfig.toml` (`tests/fixtures/preload.ts`).
 - Prefer targeted test runs while iterating; run full suite before finalizing.
 
@@ -108,6 +109,7 @@ If `@biomejs/biome` is not installed locally, use `bunx` as above.
 - Functions/variables: camelCase.
 - Constants: camelCase unless true module-level constants that merit UPPER_SNAKE_CASE.
 - Point references use string format `"ShapeName.pointName"`.
+- All test file names should be enumerated (i.e. `circle01.test.ts`, `circle02.test.ts`, etc.) and there should be only one test per file
 
 ### API and Class Design
 
@@ -143,6 +145,7 @@ If `@biomejs/biome` is not installed locally, use `bunx` as above.
 - For geometry assertions, prefer explicit values or structured snapshots.
 - Add/update tests for any behavior or API change.
 - For README/example behavior changes, update corresponding snapshot tests.
+- One test per file, always include an svg snapshot test (use toMatchSvgSnapshot)
 
 ## Change Management for Agents
 

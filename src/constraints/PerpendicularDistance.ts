@@ -5,7 +5,36 @@ import type {
   Residual,
 } from "../core"
 
-type EdgeSelector = "left" | "top" | "right" | "bottom"
+type EdgeSelector =
+  | "left"
+  | "top"
+  | "right"
+  | "bottom"
+  | "base"
+  | "altitude"
+  | "hypotenuse"
+  | "a"
+  | "b"
+  | "c"
+  | "ab"
+  | "ac"
+  | "bc"
+
+const edgePointRefs: Record<EdgeSelector, readonly [string, string]> = {
+  left: ["topLeft", "bottomLeft"],
+  top: ["topLeft", "topRight"],
+  right: ["topRight", "bottomRight"],
+  bottom: ["bottomLeft", "bottomRight"],
+  base: ["pointAB", "pointAC"],
+  altitude: ["pointAB", "pointBC"],
+  hypotenuse: ["pointAC", "pointBC"],
+  a: ["pointAB", "pointAC"],
+  b: ["pointAB", "pointBC"],
+  c: ["pointAC", "pointBC"],
+  ab: ["pointAB", "pointAC"],
+  ac: ["pointAB", "pointBC"],
+  bc: ["pointAC", "pointBC"],
+}
 
 function parseEdgeRef(ref: string): {
   shapeName: string
@@ -15,47 +44,24 @@ function parseEdgeRef(ref: string): {
 } {
   const dot = ref.indexOf(".")
   if (dot === -1) {
-    throw new Error(
-      `Invalid edge ref "${ref}". Expected "ShapeName.edge" where edge is left, top, right, or bottom.`,
-    )
+    throw new Error(`Invalid edge ref "${ref}". Expected "ShapeName.edge".`)
   }
 
   const shapeName = ref.slice(0, dot)
-  const edge = ref.slice(dot + 1)
+  const edge = ref.slice(dot + 1) as EdgeSelector
+  const points = edgePointRefs[edge]
 
-  switch (edge) {
-    case "left":
-      return {
-        shapeName,
-        edge,
-        point1: `${shapeName}.topLeft`,
-        point2: `${shapeName}.bottomLeft`,
-      }
-    case "top":
-      return {
-        shapeName,
-        edge,
-        point1: `${shapeName}.topLeft`,
-        point2: `${shapeName}.topRight`,
-      }
-    case "right":
-      return {
-        shapeName,
-        edge,
-        point1: `${shapeName}.topRight`,
-        point2: `${shapeName}.bottomRight`,
-      }
-    case "bottom":
-      return {
-        shapeName,
-        edge,
-        point1: `${shapeName}.bottomLeft`,
-        point2: `${shapeName}.bottomRight`,
-      }
-    default:
-      throw new Error(
-        `Invalid edge selector "${edge}" in "${ref}". Expected one of: left, top, right, bottom.`,
-      )
+  if (!points) {
+    throw new Error(
+      `Invalid edge selector "${edge}" in "${ref}". Expected one of: left, top, right, bottom, base, altitude, hypotenuse, a, b, c, ab, ac, bc.`,
+    )
+  }
+
+  return {
+    shapeName,
+    edge,
+    point1: `${shapeName}.${points[0]}`,
+    point2: `${shapeName}.${points[1]}`,
   }
 }
 

@@ -1,6 +1,7 @@
 export { Circle } from "./Circle"
 export { Oval } from "./Oval"
 export { Rectangle } from "./Rectangle"
+export { RightTriangle } from "./RightTriangle"
 
 import { type LineOptions, Line as LineShape } from "./Line"
 
@@ -24,4 +25,5 @@ const LineFactoryImpl = function Line(
 LineFactoryImpl.prototype = LineShape.prototype
 
 export type { LineOptions } from "./Line"
+export type { RightTriangleOptions } from "./RightTriangle"
 export const Line = LineFactoryImpl
