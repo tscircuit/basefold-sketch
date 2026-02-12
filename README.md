@@ -74,6 +74,32 @@ import { Sketch, constraints, shapes } from "@basefold/sketch"
 
 const sketch = new Sketch()
 
+sketch.add(
+  new shapes.Oval({
+    name: "O1",
+    cx: 0,
+    cy: 0,
+    rx: 60,
+    ry: 30,
+  }),
+)
+
+sketch.add(
+  new constraints.FixedPoint({
+    point: "O1.center",
+    x: 0,
+    y: 0,
+  }),
+)
+
+await sketch.solve()
+```
+
+```tsx
+import { Sketch, constraints, shapes } from "@basefold/sketch"
+
+const sketch = new Sketch()
+
 const free = shapes.Line({ length: 120 })
 const horizontal = shapes.Line({ horizontal: true, length: 80 })
 const vertical = true

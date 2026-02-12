@@ -1,4 +1,5 @@
 export { Circle } from "./Circle"
+export { Oval } from "./Oval"
 export { Rectangle } from "./Rectangle"
 
 import { type LineOptions, Line as LineShape } from "./Line"
