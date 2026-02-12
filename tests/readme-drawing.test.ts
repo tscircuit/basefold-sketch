@@ -138,5 +138,5 @@ ${triangle(toCanvas(leftDim.endTip), toCanvas(leftDim.endBase1), toCanvas(leftDi
 
   const svg = baseSvg.replace("</svg>", `${overlay}\n</svg>`)
 
-  await expect(svg).toMatchSvgSnapshot(import.meta.path)
+  await (expect(svg) as any).toMatchSvgSnapshot(import.meta.path)
 })
