@@ -5,8 +5,6 @@ import { PerpendicularAt } from "./constraints/PerpendicularAt"
 
 export interface RightTriangleOptions {
   name: string
-  x?: number
-  y?: number
   baseLength?: number
   altitudeLength?: number
   hypotenuseLength?: number
@@ -87,14 +85,13 @@ export class RightTriangle implements Shape {
       throw new Error("RightTriangle requires a non-empty name.")
     }
 
-    this.name = opts.name
-
-    const x = opts.x ?? 0
-    const y = opts.y ?? 0
-
-    if (!Number.isFinite(x) || !Number.isFinite(y)) {
-      throw new Error("RightTriangle x and y must be finite numbers.")
+    if ("x" in opts || "y" in opts) {
+      throw new Error(
+        'RightTriangle does not accept "x" or "y". Use constraints (for example FixedPoint on pointAB) to position the shape.',
+      )
     }
+
+    this.name = opts.name
 
     const baseLength = resolveEdgeLength(opts, "base", [
       "baseLength",
@@ -164,9 +161,9 @@ export class RightTriangle implements Shape {
       altitudeInit = baseInit
     }
 
-    const pointAB = new SketchPoint(x, y)
-    const pointAC = new SketchPoint(x + baseInit, y)
-    const pointBC = new SketchPoint(x, y + altitudeInit)
+    const pointAB = new SketchPoint(0, 0)
+    const pointAC = new SketchPoint(baseInit, 0)
+    const pointBC = new SketchPoint(0, altitudeInit)
 
     this.points = { pointAB, pointAC, pointBC }
     this._internal = [new PerpendicularAt(pointAB, pointAC, pointBC)]

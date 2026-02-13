@@ -13,4 +13,11 @@ test("RightTriangle validates constructor input", () => {
         aLength: 20,
       }),
   ).toThrow('Conflicting length options for edge "base".')
+  expect(
+    () =>
+      new shapes.RightTriangle({
+        name: "T3",
+        x: 10,
+      } as any),
+  ).toThrow('RightTriangle does not accept "x" or "y".')
 })

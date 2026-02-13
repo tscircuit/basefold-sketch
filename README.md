@@ -70,6 +70,7 @@ await sketch.solve()
 ```
 
 `RightTriangle` edge selectors for `PerpendicularDistance` are `base`, `altitude`, `hypotenuse`, and aliases `a`, `b`, `c` (`ab`, `ac`, `bc` are also supported).
+`RightTriangle` does not take `x`/`y`; position it with constraints (for example `FixedPoint` on `pointAB`).
 
 ```tsx
 import { Sketch, constraints, shapes } from "@basefold/sketch"

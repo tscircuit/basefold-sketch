@@ -14,8 +14,6 @@ test("RightTriangle supports point refs and length aliases", async () => {
   const sketch = new Sketch()
   const triangle = new shapes.RightTriangle({
     name: "T1",
-    x: 0,
-    y: 0,
     acLength: 40,
     hypotenuseLength: 50,
   })
