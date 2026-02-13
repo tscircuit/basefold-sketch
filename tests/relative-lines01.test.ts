@@ -33,7 +33,7 @@ test("relative lines snapshot", async () => {
   )
 
   sketch.add(
-    new constraints.Distance({
+    new constraints.PointToPointDistance({
       point1: "L1.start",
       point2: "L2.end",
       distance: 120,

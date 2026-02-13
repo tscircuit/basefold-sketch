@@ -11,7 +11,7 @@ test("README drawing snapshot", async () => {
   )
 
   sketch.add(
-    new constraints.Distance({
+    new constraints.PointToPointDistance({
       point1: "R1.topLeft",
       point2: "R1.topRight",
       distance: 100,
@@ -19,7 +19,7 @@ test("README drawing snapshot", async () => {
   )
 
   sketch.add(
-    new constraints.Distance({
+    new constraints.PointToPointDistance({
       point1: "R1.topLeft",
       point2: "R1.bottomLeft",
       distance: 100,

@@ -27,7 +27,7 @@ test("RightTriangle supports point refs and length aliases", async () => {
     }),
   )
   sketch.add(
-    new constraints.Distance({
+    new constraints.PointToPointDistance({
       point1: "T1.pointAB",
       point2: "T1.pointAC",
       distance: 30,

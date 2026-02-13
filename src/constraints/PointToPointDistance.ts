@@ -5,14 +5,14 @@ import type {
   Residual,
 } from "../core"
 
-export class Distance implements Constraint {
+export class PointToPointDistance implements Constraint {
   readonly point1: string
   readonly point2: string
   readonly distance: number
 
   constructor(opts: { point1: string; point2: string; distance: number }) {
     if (!Number.isFinite(opts.distance) || opts.distance <= 0) {
-      throw new Error("Distance must be a positive finite number.")
+      throw new Error("PointToPointDistance must be a positive finite number.")
     }
     this.point1 = opts.point1
     this.point2 = opts.point2
@@ -30,7 +30,6 @@ export class Distance implements Constraint {
         const i2 = p2.__varIndex!
         const dx = vars[i1] - vars[i2]
         const dy = vars[i1 + 1] - vars[i2 + 1]
-        // Squared distance residual (avoids sqrt).
         return dx * dx + dy * dy - d2
       },
     ]

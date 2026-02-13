@@ -27,7 +27,7 @@ test("line is tangent to circle", async () => {
   )
 
   sketch.add(
-    new constraints.Distance({
+    new constraints.PointToPointDistance({
       point1: "L1.start",
       point2: "L1.end",
       distance: 160,
@@ -42,7 +42,7 @@ test("line is tangent to circle", async () => {
   )
 
   sketch.add(
-    new constraints.Distance({
+    new constraints.PointToPointDistance({
       point1: "C1.center",
       point2: "L1.start",
       distance: 50,

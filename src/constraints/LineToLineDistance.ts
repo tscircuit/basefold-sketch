@@ -60,57 +60,60 @@ const edgePointRefs: Record<EdgeSelector, readonly [string, string]> = {
   topmostBase: ["topmostBase.start", "topmostBase.end"],
 }
 
-function parseEdgeRef(ref: string): {
-  shapeName: string
-  edge: EdgeSelector
-  point1: string
-  point2: string
-} {
+function resolveLineRef(ref: string): { point1: string; point2: string } {
   const dot = ref.indexOf(".")
   if (dot === -1) {
-    throw new Error(`Invalid edge ref "${ref}". Expected "ShapeName.edge".`)
+    return {
+      point1: `${ref}.start`,
+      point2: `${ref}.end`,
+    }
   }
 
   const shapeName = ref.slice(0, dot)
-  const edge = ref.slice(dot + 1) as EdgeSelector
-  const points = edgePointRefs[edge]
+  const selector = ref.slice(dot + 1)
+  const edge = edgePointRefs[selector as EdgeSelector]
 
-  if (!points) {
-    throw new Error(
-      `Invalid edge selector "${edge}" in "${ref}". Expected one of: left, top, right, bottom, base, altitude, hypotenuse, a, b, c, ab, ac, bc, shortBase, longBase, leg1, leg2, bottommostLeg, leftmostLeg, rightmostLeg, topmostLeg, bottommostBase, leftmostBase, rightmostBase, topmostBase.`,
-    )
+  if (edge) {
+    return {
+      point1: `${shapeName}.${edge[0]}`,
+      point2: `${shapeName}.${edge[1]}`,
+    }
   }
 
   return {
-    shapeName,
-    edge,
-    point1: `${shapeName}.${points[0]}`,
-    point2: `${shapeName}.${points[1]}`,
+    point1: `${shapeName}.${selector}.start`,
+    point2: `${shapeName}.${selector}.end`,
   }
 }
 
-export class PerpendicularDistance implements Constraint {
-  readonly edge1: string
-  readonly edge2: string
+export class LineToLineDistance implements Constraint {
+  readonly line1: string
+  readonly line2: string
   readonly distance: number
 
-  constructor(opts: { edge1: string; edge2: string; distance: number }) {
+  constructor(opts: { line1: string; line2: string; distance: number }) {
+    if (!opts.line1) {
+      throw new Error("LineToLineDistance requires a non-empty line1.")
+    }
+    if (!opts.line2) {
+      throw new Error("LineToLineDistance requires a non-empty line2.")
+    }
     if (!Number.isFinite(opts.distance) || opts.distance <= 0) {
-      throw new Error("PerpendicularDistance must be a positive finite number.")
+      throw new Error("LineToLineDistance must be a positive finite number.")
     }
 
-    this.edge1 = opts.edge1
-    this.edge2 = opts.edge2
+    this.line1 = opts.line1
+    this.line2 = opts.line2
     this.distance = opts.distance
   }
 
   buildResiduals(ctx: BuildContext): Residual[] {
-    const e1 = parseEdgeRef(this.edge1)
-    const e2 = parseEdgeRef(this.edge2)
-    const a1 = ctx.resolvePoint(e1.point1)
-    const a2 = ctx.resolvePoint(e1.point2)
-    const b1 = ctx.resolvePoint(e2.point1)
-    const b2 = ctx.resolvePoint(e2.point2)
+    const a = resolveLineRef(this.line1)
+    const b = resolveLineRef(this.line2)
+    const a1 = ctx.resolvePoint(a.point1)
+    const a2 = ctx.resolvePoint(a.point2)
+    const b1 = ctx.resolvePoint(b.point1)
+    const b2 = ctx.resolvePoint(b.point2)
     const d2 = this.distance * this.distance
 
     return [
@@ -131,47 +134,26 @@ export class PerpendicularDistance implements Constraint {
         const a1i = a1.__varIndex!
         const a2i = a2.__varIndex!
         const b1i = b1.__varIndex!
-        const b2i = b2.__varIndex!
-
         const ux = vars[a2i] - vars[a1i]
         const uy = vars[a2i + 1] - vars[a1i + 1]
+        const wx = vars[b1i] - vars[a1i]
+        const wy = vars[b1i + 1] - vars[a1i + 1]
 
-        const m1x = (vars[a1i] + vars[a2i]) / 2
-        const m1y = (vars[a1i + 1] + vars[a2i + 1]) / 2
-        const m2x = (vars[b1i] + vars[b2i]) / 2
-        const m2y = (vars[b1i + 1] + vars[b2i + 1]) / 2
+        const cross = ux * wy - uy * wx
+        const uLen2 = ux * ux + uy * uy
 
-        const wx = m2x - m1x
-        const wy = m2y - m1y
-
-        return wx * ux + wy * uy
-      },
-      (vars) => {
-        const a1i = a1.__varIndex!
-        const a2i = a2.__varIndex!
-        const b1i = b1.__varIndex!
-        const b2i = b2.__varIndex!
-
-        const m1x = (vars[a1i] + vars[a2i]) / 2
-        const m1y = (vars[a1i + 1] + vars[a2i + 1]) / 2
-        const m2x = (vars[b1i] + vars[b2i]) / 2
-        const m2y = (vars[b1i + 1] + vars[b2i + 1]) / 2
-
-        const wx = m2x - m1x
-        const wy = m2y - m1y
-
-        return wx * wx + wy * wy - d2
+        return cross * cross - d2 * uLen2
       },
     ]
   }
 
   toSvg(ctx: ConstraintSvgContext): string {
-    const e1 = parseEdgeRef(this.edge1)
-    const e2 = parseEdgeRef(this.edge2)
-    const a1 = ctx.resolvePoint(e1.point1)
-    const a2 = ctx.resolvePoint(e1.point2)
-    const b1 = ctx.resolvePoint(e2.point1)
-    const b2 = ctx.resolvePoint(e2.point2)
+    const a = resolveLineRef(this.line1)
+    const b = resolveLineRef(this.line2)
+    const a1 = ctx.resolvePoint(a.point1)
+    const a2 = ctx.resolvePoint(a.point2)
+    const b1 = ctx.resolvePoint(b.point1)
+    const b2 = ctx.resolvePoint(b.point2)
 
     const m1x = (a1.x + a2.x) / 2
     const m1y = (a1.y + a2.y) / 2
@@ -182,7 +164,6 @@ export class PerpendicularDistance implements Constraint {
     const y1 = ctx.transform.y(m1y)
     const x2 = ctx.transform.x(m2x)
     const y2 = ctx.transform.y(m2y)
-
     const tx = (x1 + x2) / 2
     const ty = (y1 + y2) / 2 - 10
 

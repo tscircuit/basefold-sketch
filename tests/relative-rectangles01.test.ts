@@ -30,7 +30,7 @@ test("relative rectangles snapshot 01", async () => {
   )
 
   sketch.add(
-    new constraints.Distance({
+    new constraints.PointToPointDistance({
       point1: "R2.topLeft",
       point2: "R1.topRight",
       distance: 40,
@@ -38,7 +38,7 @@ test("relative rectangles snapshot 01", async () => {
   )
 
   sketch.add(
-    new constraints.Distance({
+    new constraints.PointToPointDistance({
       point1: "R2.bottomLeft",
       point2: "R1.bottomRight",
       distance: 40,
