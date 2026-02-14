@@ -142,7 +142,11 @@ export class LineToLineDistance implements Constraint {
         const cross = ux * wy - uy * wx
         const uLen2 = ux * ux + uy * uy
 
-        return cross * cross - d2 * uLen2
+        if (uLen2 === 0) {
+          return -d2
+        }
+
+        return (cross * cross) / uLen2 - d2
       },
     ]
   }
