@@ -16,12 +16,14 @@
     "dist"
   ],
   "scripts": {
+    "start": "bun run --cwd site dev",
     "build": "tsup src/index.ts --format esm,cjs --dts",
     "dev": "tsup src/index.ts --format esm,cjs --dts --watch"
   },
   "devDependencies": {
     "bun-match-svg": "^0.0.15",
     "tsup": "^8.5.1",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1"
   }
 }
