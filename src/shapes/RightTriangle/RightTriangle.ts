@@ -195,6 +195,6 @@ export class RightTriangle implements Shape {
   }
 
   toGraphicsObject(): GraphicsObject {
-    return RightTriangle_toGraphicsObject(this.points)
+    return RightTriangle_toGraphicsObject(this.name, this.points)
   }
 }

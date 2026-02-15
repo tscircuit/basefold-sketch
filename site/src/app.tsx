@@ -1,3 +1,5 @@
+import type { GraphicsObject } from "graphics-debug"
+import { InteractiveGraphics } from "graphics-debug/react"
 import Prism from "prismjs"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import Editor from "react-simple-code-editor"
@@ -21,9 +23,8 @@ interface Example {
 const examples: Example[] = [
   {
     name: "Rectangle",
-    code: `async function run(api: any): Promise<string> {
-  const sketch = new api.Sketch()
-  const frame = new api.shapes.Rectangle({
+    code: `const sketch = new Sketch()
+const frame = new shapes.Rectangle({
     name: "Frame",
     x: 40,
     y: 20,
@@ -31,52 +32,40 @@ const examples: Example[] = [
     height: 120,
   })
 
-  sketch.add(frame)
-  await sketch.solve()
-  return sketch.svg({ margin: 24 })
-}`,
+sketch.add(frame)`,
   },
   {
     name: "Line + Circle",
-    code: `async function run(api: any): Promise<string> {
-  const sketch = new api.Sketch()
-  const axis = new api.shapes.Line({
+    code: `const sketch = new Sketch()
+const axis = new shapes.Line({
     name: "Axis",
     x1: 20,
     y1: 90,
     x2: 220,
     y2: 90,
   })
-  const wheel = new api.shapes.Circle({
+const wheel = new shapes.Circle({
     name: "Wheel",
     cx: 120,
     cy: 90,
     radius: 45,
   })
 
-  sketch.add(axis)
-  sketch.add(wheel)
-  sketch.add(new api.constraints.Tangent({ line: "Axis", circle: "Wheel" }))
-
-  await sketch.solve()
-  return sketch.svg({ margin: 20 })
-}`,
+sketch.add(axis)
+sketch.add(wheel)
+sketch.add(new constraints.Tangent({ line: "Axis", circle: "Wheel" }))`,
   },
   {
     name: "Right Triangle + Anchor",
-    code: `async function run(api: any): Promise<string> {
-  const sketch = new api.Sketch()
-  const tri = new api.shapes.RightTriangle({
+    code: `const sketch = new Sketch()
+const tri = new shapes.RightTriangle({
     name: "Tri",
     baseLength: 170,
     altitudeLength: 120,
   })
 
-  sketch.add(tri)
-  sketch.add(new api.constraints.FixedPoint({ point: "Tri.pointAB", x: 20, y: 20 }))
-  await sketch.solve()
-  return sketch.svg({ margin: 30 })
-}`,
+sketch.add(tri)
+sketch.add(new constraints.FixedPoint({ point: "Tri.pointAB", x: 20, y: 20 }))`,
   },
 ]
 
@@ -106,29 +95,40 @@ function formatError(error: unknown): string {
   return String(error)
 }
 
-async function executeCode(code: string): Promise<string> {
+async function executeCode(code: string): Promise<GraphicsObject> {
   const stripped = transform(code, { transforms: ["typescript"] }).code
   const runner = new Function(
     "api",
-    `"use strict";\n${stripped}\nif (typeof run === "function") return run(api);\nif (typeof render === "function") return render(api);\nif (typeof svg === "string") return svg;\nthrow new Error("Define run(api) and return an SVG string.")`,
-  ) as (api: SketchApi) => unknown
+    `"use strict";
+return (async () => {
+  const { Sketch, shapes, constraints } = api;
+  ${stripped}
+
+  if (typeof sketch === "undefined") {
+    throw new Error("Define a top-level 'sketch' variable.");
+  }
+
+  if (!(sketch instanceof Sketch)) {
+    throw new Error("'sketch' must be an instance of Sketch.");
+  }
+
+  await sketch.solve();
+  return sketch.graphicsObject();
+})();`,
+  ) as (api: SketchApi) => Promise<unknown>
 
   const value = await Promise.resolve(runner(runtimeApi))
 
-  if (typeof value !== "string") {
-    throw new Error("run(api) must return an SVG string")
+  if (!value || typeof value !== "object") {
+    throw new Error("The executed code must produce a Sketch graphics object")
   }
 
-  if (!value.trim().startsWith("<svg")) {
-    throw new Error("Returned value is not an SVG string")
-  }
-
-  return value
+  return value as GraphicsObject
 }
 
 export function App() {
   const [code, setCode] = useState<string>(starterCode)
-  const [svgMarkup, setSvgMarkup] = useState<string>("")
+  const [graphics, setGraphics] = useState<GraphicsObject | null>(null)
   const [error, setError] = useState<string>("")
   const [isRunning, setIsRunning] = useState<boolean>(false)
 
@@ -137,10 +137,10 @@ export function App() {
     setError("")
 
     try {
-      const nextSvg = await executeCode(code)
-      setSvgMarkup(nextSvg)
+      const nextGraphics = await executeCode(code)
+      setGraphics(nextGraphics)
     } catch (runError) {
-      setSvgMarkup("")
+      setGraphics(null)
       setError(formatError(runError))
     } finally {
       setIsRunning(false)
@@ -206,11 +206,12 @@ export function App() {
           <p className="panel-title">Preview</p>
           {error ? (
             <pre className="error-box">{error}</pre>
+          ) : graphics ? (
+            <div className="graphics-stage">
+              <InteractiveGraphics graphics={graphics} height={560} />
+            </div>
           ) : (
-            <div
-              className="svg-stage"
-              dangerouslySetInnerHTML={{ __html: svgMarkup }}
-            />
+            <div className="graphics-stage" />
           )}
         </section>
       </main>

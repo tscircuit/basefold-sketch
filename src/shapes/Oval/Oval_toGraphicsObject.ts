@@ -1,9 +1,13 @@
 import type { GraphicsObject } from "graphics-debug"
 import type { Point } from "../../core"
+import { toLabeledGraphicsPoints } from "../toLabeledGraphicsPoints"
 
 type OvalPoints = Record<string, Point>
 
-export function Oval_toGraphicsObject(points: OvalPoints): GraphicsObject {
+export function Oval_toGraphicsObject(
+  shapeName: string,
+  points: OvalPoints,
+): GraphicsObject {
   const center = points.center
   const radiusXPoint = points.radiusX
   const radiusYPoint = points.radiusY
@@ -26,6 +30,7 @@ export function Oval_toGraphicsObject(points: OvalPoints): GraphicsObject {
   })
 
   return {
-    polygons: [{ points: polygonPoints }],
+    points: toLabeledGraphicsPoints(shapeName, points),
+    polygons: [{ points: polygonPoints, label: shapeName }],
   }
 }

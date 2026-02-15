@@ -29,6 +29,17 @@ test("All shapes export graphics objects", async () => {
   expect(triangle.toGraphicsObject().polygons?.length).toBe(1)
   expect(trapezoid.toGraphicsObject().polygons?.length).toBe(1)
   expect(line.toGraphicsObject().lines?.length).toBe(1)
+  expect(circle.toGraphicsObject().circles?.[0]?.label).toBe("C1")
+  expect(line.toGraphicsObject().lines?.[0]?.label).toBe("L1")
+  expect(rectangle.toGraphicsObject().polygons?.[0]?.label).toBe("R1")
+  expect(
+    line.toGraphicsObject().points?.some((p) => p.label === "L1.start"),
+  ).toBe(true)
+  expect(
+    trapezoid
+      .toGraphicsObject()
+      .points?.some((p) => p.label === "Z1.longBaseStart"),
+  ).toBe(true)
 
   const sketch = new Sketch()
   sketch.add(circle)
@@ -43,6 +54,7 @@ test("All shapes export graphics objects", async () => {
   expect(graphics.circles?.length).toBe(1)
   expect(graphics.lines?.length).toBe(1)
   expect(graphics.polygons?.length).toBe(4)
+  expect(graphics.points?.length).toBe(18)
   await expect(graphics).toMatchGraphicsSvg(import.meta.path, {
     svgName: "graphics-object01.graphics",
   })

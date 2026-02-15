@@ -60,7 +60,7 @@ export class Circle implements Shape {
   }
 
   toGraphicsObject(): GraphicsObject {
-    return Circle_toGraphicsObject(this.points)
+    return Circle_toGraphicsObject(this.name, this.points)
   }
 
   getBounds(): { minX: number; minY: number; maxX: number; maxY: number } {

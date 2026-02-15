@@ -76,6 +76,6 @@ export class Rectangle implements Shape {
   }
 
   toGraphicsObject(): GraphicsObject {
-    return Rectangle_toGraphicsObject(this.points)
+    return Rectangle_toGraphicsObject(this.name, this.points)
   }
 }

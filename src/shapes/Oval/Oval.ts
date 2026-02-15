@@ -75,7 +75,7 @@ export class Oval implements Shape {
   }
 
   toGraphicsObject(): GraphicsObject {
-    return Oval_toGraphicsObject(this.points)
+    return Oval_toGraphicsObject(this.name, this.points)
   }
 
   getBounds(): { minX: number; minY: number; maxX: number; maxY: number } {

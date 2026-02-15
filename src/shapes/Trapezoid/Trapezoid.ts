@@ -222,6 +222,6 @@ export class Trapezoid implements Shape {
   }
 
   toGraphicsObject(): GraphicsObject {
-    return Trapezoid_toGraphicsObject(this.points)
+    return Trapezoid_toGraphicsObject(this.name, this.points)
   }
 }

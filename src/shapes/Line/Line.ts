@@ -124,6 +124,6 @@ export class Line implements Shape {
   }
 
   toGraphicsObject(): GraphicsObject {
-    return Line_toGraphicsObject(this.points)
+    return Line_toGraphicsObject(this.name, this.points)
   }
 }

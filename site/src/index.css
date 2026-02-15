@@ -145,7 +145,7 @@ body {
   overflow: hidden;
 }
 
-.svg-stage,
+.graphics-stage,
 .error-box {
   flex: 1;
   margin: 0;
@@ -154,19 +154,19 @@ body {
   padding: 1rem;
 }
 
-.svg-stage {
+.graphics-stage {
   align-items: center;
   display: flex;
   justify-content: center;
 }
 
-.svg-stage svg {
+.graphics-stage > div {
   border: 1px dashed hsl(var(--border));
   border-radius: 0.6rem;
   box-shadow: 0 8px 26px rgba(41, 35, 23, 0.08);
-  height: auto;
-  max-height: 100%;
-  max-width: 100%;
+  height: 100%;
+  overflow: hidden;
+  width: 100%;
 }
 
 .error-box {
