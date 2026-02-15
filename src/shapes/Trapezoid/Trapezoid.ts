@@ -115,16 +115,16 @@ export class Trapezoid implements Shape {
       shortBaseEnd = new SketchPoint(0, yOffset + shortInit)
     } else if (orientation === "top") {
       const xOffset = (longInit - shortInit) / 2
-      longBaseStart = new SketchPoint(0, -depth)
-      longBaseEnd = new SketchPoint(longInit, -depth)
+      longBaseStart = new SketchPoint(0, depth)
+      longBaseEnd = new SketchPoint(longInit, depth)
       shortBaseStart = new SketchPoint(xOffset, 0)
       shortBaseEnd = new SketchPoint(xOffset + shortInit, 0)
     } else {
       const xOffset = (longInit - shortInit) / 2
-      longBaseStart = new SketchPoint(0, 0)
-      longBaseEnd = new SketchPoint(longInit, 0)
-      shortBaseStart = new SketchPoint(xOffset, -depth)
-      shortBaseEnd = new SketchPoint(xOffset + shortInit, -depth)
+      longBaseStart = new SketchPoint(0, -depth)
+      longBaseEnd = new SketchPoint(longInit, -depth)
+      shortBaseStart = new SketchPoint(xOffset, 0)
+      shortBaseEnd = new SketchPoint(xOffset + shortInit, 0)
     }
 
     const leg1Start = longBaseStart
@@ -162,15 +162,15 @@ export class Trapezoid implements Shape {
       if (orientation === "left") {
         addLineAlias(points, "leftmostBase", longBaseStart, longBaseEnd)
         addLineAlias(points, "rightmostBase", shortBaseStart, shortBaseEnd)
-        addLineAlias(points, "topmostLeg", leg1Start, leg1End)
-        addLineAlias(points, "bottommostLeg", leg2Start, leg2End)
+        addLineAlias(points, "topmostLeg", leg2Start, leg2End)
+        addLineAlias(points, "bottommostLeg", leg1Start, leg1End)
       }
 
       if (orientation === "right") {
         addLineAlias(points, "rightmostBase", longBaseStart, longBaseEnd)
         addLineAlias(points, "leftmostBase", shortBaseStart, shortBaseEnd)
-        addLineAlias(points, "topmostLeg", leg1Start, leg1End)
-        addLineAlias(points, "bottommostLeg", leg2Start, leg2End)
+        addLineAlias(points, "topmostLeg", leg2Start, leg2End)
+        addLineAlias(points, "bottommostLeg", leg1Start, leg1End)
       }
     }
 

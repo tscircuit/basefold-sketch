@@ -40,7 +40,6 @@ const r2 = new shapes.Rectangle({
 
 sketch.add(r1)
 sketch.add(r2)
-sketch.add(new constraints.FixedPoint({ point: "R1.topLeft", x: 40, y: 20 }))
 sketch.add(new constraints.PerpendicularDistance({ edge1: "R1.rightEdge", edge2: "R2.leftEdge", distance: 40 }))`,
   },
   {

@@ -48,8 +48,8 @@ export class Rectangle implements Shape {
 
     const topLeft = new SketchPoint(x, y)
     const topRight = new SketchPoint(x + w, y)
-    const bottomLeft = new SketchPoint(x, y + h)
-    const bottomRight = new SketchPoint(x + w, y + h)
+    const bottomLeft = new SketchPoint(x, y - h)
+    const bottomRight = new SketchPoint(x + w, y - h)
 
     this.points = { topLeft, topRight, bottomLeft, bottomRight }
 

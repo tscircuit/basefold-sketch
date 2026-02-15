@@ -52,7 +52,7 @@ export function createSvgFromSketch(
 
   const t: SvgTransform = {
     x: (x) => x - minX + margin,
-    y: (y) => y - minY + margin,
+    y: (y) => maxY - y + margin,
   }
 
   let body = ""
