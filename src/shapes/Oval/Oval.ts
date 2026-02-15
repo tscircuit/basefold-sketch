@@ -1,6 +1,7 @@
 import type { GraphicsObject } from "graphics-debug"
 import type { Constraint, Point, Shape, SvgTransform } from "../../core"
 import { Point as SketchPoint } from "../../core"
+import { defineShapeEdges } from "../../edge-refs"
 import { FixedSegmentLength } from "../constraints/FixedSegmentLength"
 import { HorizontalLine } from "../constraints/HorizontalLine"
 import { VerticalLine } from "../constraints/VerticalLine"
@@ -10,6 +11,7 @@ import { Oval_getBounds, Oval_toSvg } from "./Oval_toSvg"
 export class Oval implements Shape {
   name: string
   readonly points: Record<string, Point>
+  readonly edges = defineShapeEdges({})
   private _internal: Constraint[]
 
   constructor(opts: {

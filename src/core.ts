@@ -12,12 +12,25 @@ export class Point {
 
 export type Residual = (vars: Float64Array) => number
 
+export interface Vector2 {
+  x: number
+  y: number
+}
+
+export interface EdgeReferenceDefinition {
+  point1: string
+  point2: string
+  interiorPoint?: string
+}
+
 export interface BuildContext {
   resolvePoint(ref: string): Point
+  resolveShape(name: string): Shape
 }
 
 export interface ConstraintSvgContext {
   resolvePoint(ref: string): Point
+  resolveShape(name: string): Shape
   transform: SvgTransform
 }
 
@@ -37,6 +50,7 @@ export interface SvgTransform {
 export interface Shape {
   name: string
   readonly points: Record<string, Point>
+  readonly edges: Record<string, EdgeReferenceDefinition>
 
   // Constraints that define/maintain the shape's intrinsic geometry.
   internalConstraints(): Constraint[]

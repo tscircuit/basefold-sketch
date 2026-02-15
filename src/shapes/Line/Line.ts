@@ -1,6 +1,7 @@
 import type { GraphicsObject } from "graphics-debug"
 import type { Constraint, Point, Shape, SvgTransform } from "../../core"
 import { Point as SketchPoint } from "../../core"
+import { defineShapeEdges } from "../../edge-refs"
 import { FixedSegmentLength } from "../constraints/FixedSegmentLength"
 import { HorizontalLine } from "../constraints/HorizontalLine"
 import { VerticalLine } from "../constraints/VerticalLine"
@@ -23,6 +24,12 @@ export class Line implements Shape {
 
   name: string
   readonly points: Record<string, Point>
+  readonly edges = defineShapeEdges({
+    segment: {
+      point1: "start",
+      point2: "end",
+    },
+  })
   private _internal: Constraint[]
 
   constructor(opts: LineOptions = {}) {

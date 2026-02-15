@@ -66,6 +66,7 @@ export function createSvgFromSketch(
       if (constraint.toSvg) {
         constraintsSvg += constraint.toSvg({
           resolvePoint: options.buildContext.resolvePoint,
+          resolveShape: options.buildContext.resolveShape,
           transform: t,
         })
       }

@@ -1,6 +1,13 @@
 import type { GraphicsObject } from "graphics-debug"
-import type { Constraint, Point, Shape, SvgTransform } from "../../core"
+import type {
+  Constraint,
+  EdgeReferenceDefinition,
+  Point,
+  Shape,
+  SvgTransform,
+} from "../../core"
 import { Point as SketchPoint } from "../../core"
+import { defineShapeEdges } from "../../edge-refs"
 import { EqualSegmentLengths } from "../constraints/EqualSegmentLengths"
 import { FixedSegmentLength } from "../constraints/FixedSegmentLength"
 import { HorizontalLine } from "../constraints/HorizontalLine"
@@ -32,6 +39,7 @@ function addLineAlias(
 export class Trapezoid implements Shape {
   name: string
   readonly points: Record<string, Point>
+  readonly edges: Record<string, EdgeReferenceDefinition>
   private _internal: Constraint[]
 
   constructor(opts: TrapezoidOptions) {
@@ -175,6 +183,107 @@ export class Trapezoid implements Shape {
     }
 
     this.points = points
+
+    const edgeDefs: Record<string, EdgeReferenceDefinition> = {
+      longBase: {
+        point1: "longBase.start",
+        point2: "longBase.end",
+        interiorPoint: "shortBase.start",
+      },
+      shortBase: {
+        point1: "shortBase.start",
+        point2: "shortBase.end",
+        interiorPoint: "longBase.start",
+      },
+      leg1: {
+        point1: "leg1.start",
+        point2: "leg1.end",
+        interiorPoint: "leg2.end",
+      },
+      leg2: {
+        point1: "leg2.start",
+        point2: "leg2.end",
+        interiorPoint: "leg1.start",
+      },
+    }
+
+    if (orientation === "bottom") {
+      edgeDefs.bottommostBase = {
+        point1: "bottommostBase.start",
+        point2: "bottommostBase.end",
+      }
+      edgeDefs.topmostBase = {
+        point1: "topmostBase.start",
+        point2: "topmostBase.end",
+      }
+      edgeDefs.leftmostLeg = {
+        point1: "leftmostLeg.start",
+        point2: "leftmostLeg.end",
+      }
+      edgeDefs.rightmostLeg = {
+        point1: "rightmostLeg.start",
+        point2: "rightmostLeg.end",
+      }
+    }
+
+    if (orientation === "top") {
+      edgeDefs.topmostBase = {
+        point1: "topmostBase.start",
+        point2: "topmostBase.end",
+      }
+      edgeDefs.bottommostBase = {
+        point1: "bottommostBase.start",
+        point2: "bottommostBase.end",
+      }
+      edgeDefs.leftmostLeg = {
+        point1: "leftmostLeg.start",
+        point2: "leftmostLeg.end",
+      }
+      edgeDefs.rightmostLeg = {
+        point1: "rightmostLeg.start",
+        point2: "rightmostLeg.end",
+      }
+    }
+
+    if (orientation === "left") {
+      edgeDefs.leftmostBase = {
+        point1: "leftmostBase.start",
+        point2: "leftmostBase.end",
+      }
+      edgeDefs.rightmostBase = {
+        point1: "rightmostBase.start",
+        point2: "rightmostBase.end",
+      }
+      edgeDefs.topmostLeg = {
+        point1: "topmostLeg.start",
+        point2: "topmostLeg.end",
+      }
+      edgeDefs.bottommostLeg = {
+        point1: "bottommostLeg.start",
+        point2: "bottommostLeg.end",
+      }
+    }
+
+    if (orientation === "right") {
+      edgeDefs.rightmostBase = {
+        point1: "rightmostBase.start",
+        point2: "rightmostBase.end",
+      }
+      edgeDefs.leftmostBase = {
+        point1: "leftmostBase.start",
+        point2: "leftmostBase.end",
+      }
+      edgeDefs.topmostLeg = {
+        point1: "topmostLeg.start",
+        point2: "topmostLeg.end",
+      }
+      edgeDefs.bottommostLeg = {
+        point1: "bottommostLeg.start",
+        point2: "bottommostLeg.end",
+      }
+    }
+
+    this.edges = defineShapeEdges(edgeDefs)
     this._internal = [
       new ParallelLines(
         longBaseStart,

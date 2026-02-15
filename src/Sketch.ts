@@ -67,6 +67,14 @@ export class Sketch {
     return p
   }
 
+  private resolveShape(name: string): Shape {
+    const shape = this.shapes.get(name)
+    if (!shape) {
+      throw new Error(`Unknown shape "${name}".`)
+    }
+    return shape
+  }
+
   private collectPoints(): Point[] {
     const pts: Point[] = []
     const seen = new Set<Point>()
@@ -107,6 +115,7 @@ export class Sketch {
 
     const ctx: BuildContext = {
       resolvePoint: (ref: string) => this.resolvePoint(ref),
+      resolveShape: (name: string) => this.resolveShape(name),
     }
 
     const residuals: Residual[] = []
@@ -145,6 +154,7 @@ export class Sketch {
     const points = this.collectPoints()
     const ctx: BuildContext = {
       resolvePoint: (ref: string) => this.resolvePoint(ref),
+      resolveShape: (name: string) => this.resolveShape(name),
     }
 
     return createSvgFromSketch({

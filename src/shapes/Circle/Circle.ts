@@ -1,6 +1,7 @@
 import type { GraphicsObject } from "graphics-debug"
 import type { Constraint, Point, Shape, SvgTransform } from "../../core"
 import { Point as SketchPoint } from "../../core"
+import { defineShapeEdges } from "../../edge-refs"
 import { FixedSegmentLength } from "../constraints/FixedSegmentLength"
 import { Circle_toGraphicsObject } from "./Circle_toGraphicsObject"
 import { Circle_getBounds, Circle_toSvg } from "./Circle_toSvg"
@@ -8,6 +9,7 @@ import { Circle_getBounds, Circle_toSvg } from "./Circle_toSvg"
 export class Circle implements Shape {
   name: string
   readonly points: Record<string, Point>
+  readonly edges = defineShapeEdges({})
   private _internal: Constraint[]
 
   constructor(opts: {

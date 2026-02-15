@@ -1,6 +1,7 @@
 import type { GraphicsObject } from "graphics-debug"
 import type { Constraint, Point, Shape, SvgTransform } from "../../core"
 import { Point as SketchPoint } from "../../core"
+import { defineShapeEdges } from "../../edge-refs"
 import { FixedSegmentLength } from "../constraints/FixedSegmentLength"
 import { ParallelogramClosure } from "../constraints/ParallelogramClosure"
 import { PerpendicularAt } from "../constraints/PerpendicularAt"
@@ -10,6 +11,48 @@ import { Rectangle_toSvg } from "./Rectangle_toSvg"
 export class Rectangle implements Shape {
   name: string
   readonly points: Record<string, Point>
+  readonly edges = defineShapeEdges({
+    left: {
+      point1: "topLeft",
+      point2: "bottomLeft",
+      interiorPoint: "topRight",
+    },
+    leftEdge: {
+      point1: "topLeft",
+      point2: "bottomLeft",
+      interiorPoint: "topRight",
+    },
+    top: {
+      point1: "topLeft",
+      point2: "topRight",
+      interiorPoint: "bottomLeft",
+    },
+    topEdge: {
+      point1: "topLeft",
+      point2: "topRight",
+      interiorPoint: "bottomLeft",
+    },
+    right: {
+      point1: "topRight",
+      point2: "bottomRight",
+      interiorPoint: "topLeft",
+    },
+    rightEdge: {
+      point1: "topRight",
+      point2: "bottomRight",
+      interiorPoint: "topLeft",
+    },
+    bottom: {
+      point1: "bottomLeft",
+      point2: "bottomRight",
+      interiorPoint: "topLeft",
+    },
+    bottomEdge: {
+      point1: "bottomLeft",
+      point2: "bottomRight",
+      interiorPoint: "topLeft",
+    },
+  })
   private _internal: Constraint[]
 
   constructor(opts: {

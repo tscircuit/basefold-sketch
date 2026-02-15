@@ -1,6 +1,7 @@
 import type { GraphicsObject } from "graphics-debug"
 import type { Constraint, Point, Shape, SvgTransform } from "../../core"
 import { Point as SketchPoint } from "../../core"
+import { defineShapeEdges } from "../../edge-refs"
 import { FixedSegmentLength } from "../constraints/FixedSegmentLength"
 import { PerpendicularAt } from "../constraints/PerpendicularAt"
 import { RightTriangle_toGraphicsObject } from "./RightTriangle_toGraphicsObject"
@@ -81,6 +82,53 @@ function ensureHypotenuseCompatibility(
 export class RightTriangle implements Shape {
   name: string
   readonly points: Record<string, Point>
+  readonly edges = defineShapeEdges({
+    base: {
+      point1: "pointAB",
+      point2: "pointAC",
+      interiorPoint: "pointBC",
+    },
+    altitude: {
+      point1: "pointAB",
+      point2: "pointBC",
+      interiorPoint: "pointAC",
+    },
+    hypotenuse: {
+      point1: "pointAC",
+      point2: "pointBC",
+      interiorPoint: "pointAB",
+    },
+    a: {
+      point1: "pointAB",
+      point2: "pointAC",
+      interiorPoint: "pointBC",
+    },
+    b: {
+      point1: "pointAB",
+      point2: "pointBC",
+      interiorPoint: "pointAC",
+    },
+    c: {
+      point1: "pointAC",
+      point2: "pointBC",
+      interiorPoint: "pointAB",
+    },
+    ab: {
+      point1: "pointAB",
+      point2: "pointAC",
+      interiorPoint: "pointBC",
+    },
+    ac: {
+      point1: "pointAB",
+      point2: "pointBC",
+      interiorPoint: "pointAC",
+    },
+    bc: {
+      point1: "pointAC",
+      point2: "pointBC",
+      interiorPoint: "pointAB",
+    },
+  })
   private _internal: Constraint[]
 
   constructor(opts: RightTriangleOptions) {
