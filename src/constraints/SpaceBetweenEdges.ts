@@ -6,6 +6,48 @@ import type {
 } from "../core"
 import { computeInteriorUnitNormal, resolveShapeEdgeRef } from "../edge-refs"
 
+function parallelAndMidpointResiduals(
+  a1: { __varIndex: number | null },
+  a2: { __varIndex: number | null },
+  b1: { __varIndex: number | null },
+  b2: { __varIndex: number | null },
+): readonly [Residual, Residual] {
+  const parallelResidual: Residual = (vars) => {
+    const a1i = a1.__varIndex!
+    const a2i = a2.__varIndex!
+    const b1i = b1.__varIndex!
+    const b2i = b2.__varIndex!
+
+    const ux = vars[a2i] - vars[a1i]
+    const uy = vars[a2i + 1] - vars[a1i + 1]
+    const vx = vars[b2i] - vars[b1i]
+    const vy = vars[b2i + 1] - vars[b1i + 1]
+
+    return ux * vy - uy * vx
+  }
+
+  const midpointPerpendicularResidual: Residual = (vars) => {
+    const a1i = a1.__varIndex!
+    const a2i = a2.__varIndex!
+    const b1i = b1.__varIndex!
+    const b2i = b2.__varIndex!
+
+    const ux = vars[a2i] - vars[a1i]
+    const uy = vars[a2i + 1] - vars[a1i + 1]
+
+    const m1x = (vars[a1i] + vars[a2i]) / 2
+    const m1y = (vars[a1i + 1] + vars[a2i + 1]) / 2
+    const m2x = (vars[b1i] + vars[b2i]) / 2
+    const m2y = (vars[b1i + 1] + vars[b2i + 1]) / 2
+    const wx = m2x - m1x
+    const wy = m2y - m1y
+
+    return wx * ux + wy * uy
+  }
+
+  return [parallelResidual, midpointPerpendicularResidual]
+}
+
 export class SpaceBetweenEdges implements Constraint {
   readonly edge1: string
   readonly edge2: string
@@ -33,50 +75,45 @@ export class SpaceBetweenEdges implements Constraint {
     const e1 = resolveShapeEdgeRef(this.edge1, ctx.resolveShape)
     const e2 = resolveShapeEdgeRef(this.edge2, ctx.resolveShape)
 
-    if (!e1.interiorPointRef) {
-      throw new Error(
-        `Edge "${this.edge1}" does not define an interiorPoint, which is required by SpaceBetweenEdges.`,
-      )
-    }
-
     const a1 = ctx.resolvePoint(e1.point1Ref)
     const a2 = ctx.resolvePoint(e1.point2Ref)
     const b1 = ctx.resolvePoint(e2.point1Ref)
     const b2 = ctx.resolvePoint(e2.point2Ref)
-    const interior = ctx.resolvePoint(e1.interiorPointRef)
+    const [parallelResidual, midpointPerpendicularResidual] =
+      parallelAndMidpointResiduals(a1, a2, b1, b2)
 
-    return [
-      (vars) => {
+    if (!e1.interiorPointRef || !e2.interiorPointRef) {
+      const d2 = this.distance * this.distance
+
+      const unsignedDistanceResidual: Residual = (vars) => {
         const a1i = a1.__varIndex!
         const a2i = a2.__varIndex!
         const b1i = b1.__varIndex!
         const b2i = b2.__varIndex!
-
-        const ux = vars[a2i] - vars[a1i]
-        const uy = vars[a2i + 1] - vars[a1i + 1]
-        const vx = vars[b2i] - vars[b1i]
-        const vy = vars[b2i + 1] - vars[b1i + 1]
-
-        return ux * vy - uy * vx
-      },
-      (vars) => {
-        const a1i = a1.__varIndex!
-        const a2i = a2.__varIndex!
-        const b1i = b1.__varIndex!
-        const b2i = b2.__varIndex!
-
-        const ux = vars[a2i] - vars[a1i]
-        const uy = vars[a2i + 1] - vars[a1i + 1]
 
         const m1x = (vars[a1i] + vars[a2i]) / 2
         const m1y = (vars[a1i + 1] + vars[a2i + 1]) / 2
         const m2x = (vars[b1i] + vars[b2i]) / 2
         const m2y = (vars[b1i + 1] + vars[b2i + 1]) / 2
+
         const wx = m2x - m1x
         const wy = m2y - m1y
 
-        return wx * ux + wy * uy
-      },
+        return wx * wx + wy * wy - d2
+      }
+
+      return [
+        parallelResidual,
+        midpointPerpendicularResidual,
+        unsignedDistanceResidual,
+      ]
+    }
+
+    const interior = ctx.resolvePoint(e1.interiorPointRef)
+
+    return [
+      parallelResidual,
+      midpointPerpendicularResidual,
       (vars) => {
         const a1i = a1.__varIndex!
         const a2i = a2.__varIndex!
