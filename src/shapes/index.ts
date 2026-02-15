@@ -1,4 +1,6 @@
+export { Axis } from "./Axis/Axis"
 export { Circle } from "./Circle/Circle"
+export { InfiniteLine } from "./InfiniteLine/InfiniteLine"
 export { Oval } from "./Oval/Oval"
 export { Rectangle } from "./Rectangle/Rectangle"
 export { RightTriangle } from "./RightTriangle/RightTriangle"
@@ -25,6 +27,11 @@ const LineFactoryImpl = function Line(
 
 LineFactoryImpl.prototype = LineShape.prototype
 
+export type { AxisOptions } from "./Axis/Axis"
+export type {
+  InfiniteLineDirection,
+  InfiniteLineOptions,
+} from "./InfiniteLine/InfiniteLine"
 export type { LineOptions } from "./Line/Line"
 export type { RightTriangleOptions } from "./RightTriangle/RightTriangle"
 export type {
