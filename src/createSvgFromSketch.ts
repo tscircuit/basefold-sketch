@@ -20,6 +20,7 @@ export function createSvgFromSketch(
 ): string {
   const margin = options.margin ?? 10
   const strokeWidth = options.strokeWidth ?? 2
+  const shapes = [...options.shapes]
 
   if (options.points.length === 0) {
     return '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect x="0" y="0" width="100" height="100" fill="white" /></svg>'
@@ -36,6 +37,16 @@ export function createSvgFromSketch(
     if (p.y > maxY) maxY = p.y
   }
 
+  for (const shape of shapes) {
+    const bounds = shape.getBounds?.()
+    if (!bounds) continue
+
+    if (bounds.minX < minX) minX = bounds.minX
+    if (bounds.minY < minY) minY = bounds.minY
+    if (bounds.maxX > maxX) maxX = bounds.maxX
+    if (bounds.maxY > maxY) maxY = bounds.maxY
+  }
+
   const w = maxX - minX + 2 * margin
   const h = maxY - minY + 2 * margin
 
@@ -45,7 +56,7 @@ export function createSvgFromSketch(
   }
 
   let body = ""
-  for (const shape of options.shapes) {
+  for (const shape of shapes) {
     body += shape.toSvg(t)
   }
 

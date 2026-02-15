@@ -82,4 +82,25 @@ export class Oval implements Shape {
 
     return `<ellipse cx="${t.x(center.x)}" cy="${t.y(center.y)}" rx="${rx}" ry="${ry}" />`
   }
+
+  getBounds(): { minX: number; minY: number; maxX: number; maxY: number } {
+    const center = this.points.center
+    const radiusXPoint = this.points.radiusX
+    const radiusYPoint = this.points.radiusY
+
+    const dx = radiusXPoint.x - center.x
+    const dy = radiusXPoint.y - center.y
+    const rx = Math.sqrt(dx * dx + dy * dy)
+
+    const ex = radiusYPoint.x - center.x
+    const ey = radiusYPoint.y - center.y
+    const ry = Math.sqrt(ex * ex + ey * ey)
+
+    return {
+      minX: center.x - rx,
+      minY: center.y - ry,
+      maxX: center.x + rx,
+      maxY: center.y + ry,
+    }
+  }
 }

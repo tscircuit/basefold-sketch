@@ -61,4 +61,19 @@ export class Circle implements Shape {
 
     return `<circle cx="${t.x(center.x)}" cy="${t.y(center.y)}" r="${radius}" />`
   }
+
+  getBounds(): { minX: number; minY: number; maxX: number; maxY: number } {
+    const center = this.points.center
+    const radiusPoint = this.points.radius
+    const dx = radiusPoint.x - center.x
+    const dy = radiusPoint.y - center.y
+    const radius = Math.sqrt(dx * dx + dy * dy)
+
+    return {
+      minX: center.x - radius,
+      minY: center.y - radius,
+      maxX: center.x + radius,
+      maxY: center.y + radius,
+    }
+  }
 }

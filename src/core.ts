@@ -41,4 +41,12 @@ export interface Shape {
 
   // Emits SVG elements (no outer <svg> wrapper).
   toSvg(t: SvgTransform): string
+
+  // Optional geometric bounds used for SVG framing.
+  getBounds?(): {
+    minX: number
+    minY: number
+    maxX: number
+    maxY: number
+  }
 }
