@@ -7,9 +7,13 @@ import type {
 
 type EdgeSelector =
   | "left"
+  | "leftEdge"
   | "top"
+  | "topEdge"
   | "right"
+  | "rightEdge"
   | "bottom"
+  | "bottomEdge"
   | "base"
   | "altitude"
   | "hypotenuse"
@@ -34,9 +38,13 @@ type EdgeSelector =
 
 const edgePointRefs: Record<EdgeSelector, readonly [string, string]> = {
   left: ["topLeft", "bottomLeft"],
+  leftEdge: ["topLeft", "bottomLeft"],
   top: ["topLeft", "topRight"],
+  topEdge: ["topLeft", "topRight"],
   right: ["topRight", "bottomRight"],
+  rightEdge: ["topRight", "bottomRight"],
   bottom: ["bottomLeft", "bottomRight"],
+  bottomEdge: ["bottomLeft", "bottomRight"],
   base: ["pointAB", "pointAC"],
   altitude: ["pointAB", "pointBC"],
   hypotenuse: ["pointAC", "pointBC"],
@@ -77,7 +85,7 @@ function parseEdgeRef(ref: string): {
 
   if (!points) {
     throw new Error(
-      `Invalid edge selector "${edge}" in "${ref}". Expected one of: left, top, right, bottom, base, altitude, hypotenuse, a, b, c, ab, ac, bc, shortBase, longBase, leg1, leg2, bottommostLeg, leftmostLeg, rightmostLeg, topmostLeg, bottommostBase, leftmostBase, rightmostBase, topmostBase.`,
+      `Invalid edge selector "${edge}" in "${ref}". Expected one of: left, leftEdge, top, topEdge, right, rightEdge, bottom, bottomEdge, base, altitude, hypotenuse, a, b, c, ab, ac, bc, shortBase, longBase, leg1, leg2, bottommostLeg, leftmostLeg, rightmostLeg, topmostLeg, bottommostBase, leftmostBase, rightmostBase, topmostBase.`,
     )
   }
 

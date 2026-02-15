@@ -24,15 +24,24 @@ const examples: Example[] = [
   {
     name: "Rectangle",
     code: `const sketch = new Sketch()
-const frame = new shapes.Rectangle({
-    name: "Frame",
+const r1 = new shapes.Rectangle({
+    name: "R1",
     x: 40,
     y: 20,
-    width: 190,
+    width: 150,
+    height: 120,
+  })
+const r2 = new shapes.Rectangle({
+    name: "R2",
+    y: 20,
+    width: 90,
     height: 120,
   })
 
-sketch.add(frame)`,
+sketch.add(r1)
+sketch.add(r2)
+sketch.add(new constraints.FixedPoint({ point: "R1.topLeft", x: 40, y: 20 }))
+sketch.add(new constraints.PerpendicularDistance({ edge1: "R1.rightEdge", edge2: "R2.leftEdge", distance: 40 }))`,
   },
   {
     name: "Line + Circle",
