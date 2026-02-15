@@ -25,7 +25,9 @@ const examples: Example[] = [
   {
     name: "Rectangle",
     slug: "rectangle",
-    code: `const sketch = new Sketch()
+    code: `import { shapes, constraints, Sketch } from "@basefold/sketch"
+
+const sketch = new Sketch()
 const r1 = new shapes.Rectangle({
     name: "R1",
     x: 40,
@@ -47,7 +49,9 @@ sketch.add(new constraints.SpaceBetweenEdges({ edge1: "R1.rightEdge", edge2: "R2
   {
     name: "Circle",
     slug: "circle",
-    code: `const sketch = new Sketch()
+    code: `import { shapes, constraints, Sketch } from "@basefold/sketch"
+
+const sketch = new Sketch()
 const axis = new shapes.Axis({
      name: "Axis",
     origin: { x: 120, y: 90 },
@@ -67,7 +71,9 @@ sketch.add(new constraints.Tangent({ line: "Axis", circle: "Wheel" }))`,
   {
     name: "Right Triangle + Anchor",
     slug: "right-triangle-anchor",
-    code: `const sketch = new Sketch()
+    code: `import { shapes, constraints, Sketch } from "@basefold/sketch"
+
+const sketch = new Sketch()
 const tri = new shapes.RightTriangle({
     name: "Tri",
     baseLength: 170,
@@ -129,7 +135,11 @@ function formatError(error: unknown): string {
 }
 
 async function executeCode(code: string): Promise<GraphicsObject> {
-  const stripped = transform(code, { transforms: ["typescript"] }).code
+  const runtimeCode = code.replace(
+    /^\s*import\s*\{\s*shapes\s*,\s*constraints\s*,\s*Sketch\s*\}\s*from\s*["']@basefold\/sketch["']\s*;?\s*$/m,
+    "",
+  )
+  const stripped = transform(runtimeCode, { transforms: ["typescript"] }).code
   const runner = new Function(
     "api",
     `"use strict";
@@ -163,6 +173,7 @@ export function App() {
   const [code, setCode] = useState<string>(() => {
     return getExampleFromUrl()?.code ?? defaultExample.code
   })
+  const [graphicsKey, setGraphicsKey] = useState<number>(0)
   const [graphics, setGraphics] = useState<GraphicsObject | null>(null)
   const [error, setError] = useState<string>("")
   const [isRunning, setIsRunning] = useState<boolean>(false)
@@ -191,6 +202,7 @@ export function App() {
     const onPopState = (): void => {
       const nextExample = getExampleFromUrl() ?? defaultExample
       setCode(nextExample.code)
+      setGraphicsKey((prev) => prev + 1)
     }
 
     window.addEventListener("popstate", onPopState)
@@ -228,6 +240,7 @@ export function App() {
                     onSelect={() => {
                       setCode(example.code)
                       updateUrlForExample(example)
+                      setGraphicsKey((prev) => prev + 1)
                     }}
                   >
                     {example.name}
@@ -262,7 +275,11 @@ export function App() {
             <pre className="error-box">{error}</pre>
           ) : graphics ? (
             <div className="graphics-stage">
-              <InteractiveGraphics graphics={graphics} height={560} />
+              <InteractiveGraphics
+                key={graphicsKey}
+                graphics={graphics}
+                height={560}
+              />
             </div>
           ) : (
             <div className="graphics-stage" />
