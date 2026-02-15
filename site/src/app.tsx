@@ -17,12 +17,14 @@ import { constraints, Sketch, shapes } from "../../src/index"
 
 interface Example {
   name: string
+  slug: string
   code: string
 }
 
 const examples: Example[] = [
   {
     name: "Rectangle",
+    slug: "rectangle",
     code: `const sketch = new Sketch()
 const r1 = new shapes.Rectangle({
     name: "R1",
@@ -43,15 +45,14 @@ sketch.add(r2)
 sketch.add(new constraints.SpaceBetweenEdges({ edge1: "R1.rightEdge", edge2: "R2.leftEdge", distance: 40 }))`,
   },
   {
-    name: "Line + Circle",
+    name: "Circle",
+    slug: "circle",
     code: `const sketch = new Sketch()
-const axis = new shapes.Line({
-    name: "Axis",
-    x1: 20,
-    y1: 90,
-    x2: 220,
-    y2: 90,
-  })
+const axis = new shapes.Axis({
+     name: "Axis",
+    origin: { x: 120, y: 90 },
+    direction: "x+",
+   })
 const wheel = new shapes.Circle({
     name: "Wheel",
     cx: 120,
@@ -65,6 +66,7 @@ sketch.add(new constraints.Tangent({ line: "Axis", circle: "Wheel" }))`,
   },
   {
     name: "Right Triangle + Anchor",
+    slug: "right-triangle-anchor",
     code: `const sketch = new Sketch()
 const tri = new shapes.RightTriangle({
     name: "Tri",
@@ -77,7 +79,30 @@ sketch.add(new constraints.FixedPoint({ point: "Tri.pointAB", x: 20, y: 20 }))`,
   },
 ]
 
-const starterCode = examples[0].code
+const defaultExample = examples[0]
+
+const findExampleBySlug = (slug: string | null): Example | undefined => {
+  if (!slug) {
+    return undefined
+  }
+
+  return examples.find((example) => example.slug === slug)
+}
+
+const getExampleFromUrl = (): Example | undefined => {
+  const params = new URLSearchParams(window.location.search)
+  return findExampleBySlug(params.get("example"))
+}
+
+const updateUrlForExample = (example: Example): void => {
+  const url = new URL(window.location.href)
+  url.searchParams.set("example", example.slug)
+  window.history.replaceState(
+    null,
+    "",
+    `${url.pathname}${url.search}${url.hash}`,
+  )
+}
 
 const highlightCode = (input: string): string => {
   return Prism.highlight(input, Prism.languages.typescript, "typescript")
@@ -135,7 +160,9 @@ return (async () => {
 }
 
 export function App() {
-  const [code, setCode] = useState<string>(starterCode)
+  const [code, setCode] = useState<string>(() => {
+    return getExampleFromUrl()?.code ?? defaultExample.code
+  })
   const [graphics, setGraphics] = useState<GraphicsObject | null>(null)
   const [error, setError] = useState<string>("")
   const [isRunning, setIsRunning] = useState<boolean>(false)
@@ -154,6 +181,24 @@ export function App() {
       setIsRunning(false)
     }
   }, [code])
+
+  useEffect(() => {
+    const initialExample = getExampleFromUrl() ?? defaultExample
+    updateUrlForExample(initialExample)
+  }, [])
+
+  useEffect(() => {
+    const onPopState = (): void => {
+      const nextExample = getExampleFromUrl() ?? defaultExample
+      setCode(nextExample.code)
+    }
+
+    window.addEventListener("popstate", onPopState)
+
+    return () => {
+      window.removeEventListener("popstate", onPopState)
+    }
+  }, [])
 
   useEffect(() => {
     runCode().catch(() => {
@@ -182,6 +227,7 @@ export function App() {
                     key={example.name}
                     onSelect={() => {
                       setCode(example.code)
+                      updateUrlForExample(example)
                     }}
                   >
                     {example.name}
@@ -223,6 +269,12 @@ export function App() {
           )}
         </section>
       </main>
+
+      <footer className="page-footer">
+        <a href="https://github.com/tscircuit/basefold-sketch">GitHub</a>
+        <span aria-hidden>&middot;</span>
+        <a href="https://tscircuit.com">tscircuit</a>
+      </footer>
     </div>
   )
 }
