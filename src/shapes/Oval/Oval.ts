@@ -1,8 +1,11 @@
-import type { Constraint, Point, Shape, SvgTransform } from "../core"
-import { Point as SketchPoint } from "../core"
-import { FixedSegmentLength } from "./constraints/FixedSegmentLength"
-import { HorizontalLine } from "./constraints/HorizontalLine"
-import { VerticalLine } from "./constraints/VerticalLine"
+import type { GraphicsObject } from "graphics-debug"
+import type { Constraint, Point, Shape, SvgTransform } from "../../core"
+import { Point as SketchPoint } from "../../core"
+import { FixedSegmentLength } from "../constraints/FixedSegmentLength"
+import { HorizontalLine } from "../constraints/HorizontalLine"
+import { VerticalLine } from "../constraints/VerticalLine"
+import { Oval_toGraphicsObject } from "./Oval_toGraphicsObject"
+import { Oval_getBounds, Oval_toSvg } from "./Oval_toSvg"
 
 export class Oval implements Shape {
   name: string
@@ -68,39 +71,14 @@ export class Oval implements Shape {
   }
 
   toSvg(t: SvgTransform): string {
-    const center = this.points.center
-    const radiusXPoint = this.points.radiusX
-    const radiusYPoint = this.points.radiusY
+    return Oval_toSvg(this.points, t)
+  }
 
-    const dx = radiusXPoint.x - center.x
-    const dy = radiusXPoint.y - center.y
-    const rx = Math.sqrt(dx * dx + dy * dy)
-
-    const ex = radiusYPoint.x - center.x
-    const ey = radiusYPoint.y - center.y
-    const ry = Math.sqrt(ex * ex + ey * ey)
-
-    return `<ellipse cx="${t.x(center.x)}" cy="${t.y(center.y)}" rx="${rx}" ry="${ry}" />`
+  toGraphicsObject(): GraphicsObject {
+    return Oval_toGraphicsObject(this.points)
   }
 
   getBounds(): { minX: number; minY: number; maxX: number; maxY: number } {
-    const center = this.points.center
-    const radiusXPoint = this.points.radiusX
-    const radiusYPoint = this.points.radiusY
-
-    const dx = radiusXPoint.x - center.x
-    const dy = radiusXPoint.y - center.y
-    const rx = Math.sqrt(dx * dx + dy * dy)
-
-    const ex = radiusYPoint.x - center.x
-    const ey = radiusYPoint.y - center.y
-    const ry = Math.sqrt(ex * ex + ey * ey)
-
-    return {
-      minX: center.x - rx,
-      minY: center.y - ry,
-      maxX: center.x + rx,
-      maxY: center.y + ry,
-    }
+    return Oval_getBounds(this.points)
   }
 }

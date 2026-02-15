@@ -1,8 +1,11 @@
-import type { Constraint, Point, Shape, SvgTransform } from "../core"
-import { Point as SketchPoint } from "../core"
-import { FixedSegmentLength } from "./constraints/FixedSegmentLength"
-import { HorizontalLine } from "./constraints/HorizontalLine"
-import { VerticalLine } from "./constraints/VerticalLine"
+import type { GraphicsObject } from "graphics-debug"
+import type { Constraint, Point, Shape, SvgTransform } from "../../core"
+import { Point as SketchPoint } from "../../core"
+import { FixedSegmentLength } from "../constraints/FixedSegmentLength"
+import { HorizontalLine } from "../constraints/HorizontalLine"
+import { VerticalLine } from "../constraints/VerticalLine"
+import { Line_toGraphicsObject } from "./Line_toGraphicsObject"
+import { Line_toSvg } from "./Line_toSvg"
 
 export interface LineOptions {
   name?: string
@@ -117,9 +120,10 @@ export class Line implements Shape {
   }
 
   toSvg(t: SvgTransform): string {
-    const start = this.points.start
-    const end = this.points.end
+    return Line_toSvg(this.points, t)
+  }
 
-    return `<line x1="${t.x(start.x)}" y1="${t.y(start.y)}" x2="${t.x(end.x)}" y2="${t.y(end.y)}" />`
+  toGraphicsObject(): GraphicsObject {
+    return Line_toGraphicsObject(this.points)
   }
 }

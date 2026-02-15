@@ -1,8 +1,11 @@
-import type { Constraint, Point, Shape, SvgTransform } from "../core"
-import { Point as SketchPoint } from "../core"
-import { FixedSegmentLength } from "./constraints/FixedSegmentLength"
-import { ParallelogramClosure } from "./constraints/ParallelogramClosure"
-import { PerpendicularAt } from "./constraints/PerpendicularAt"
+import type { GraphicsObject } from "graphics-debug"
+import type { Constraint, Point, Shape, SvgTransform } from "../../core"
+import { Point as SketchPoint } from "../../core"
+import { FixedSegmentLength } from "../constraints/FixedSegmentLength"
+import { ParallelogramClosure } from "../constraints/ParallelogramClosure"
+import { PerpendicularAt } from "../constraints/PerpendicularAt"
+import { Rectangle_toGraphicsObject } from "./Rectangle_toGraphicsObject"
+import { Rectangle_toSvg } from "./Rectangle_toSvg"
 
 export class Rectangle implements Shape {
   name: string
@@ -69,18 +72,10 @@ export class Rectangle implements Shape {
   }
 
   toSvg(t: SvgTransform): string {
-    const tl = this.points.topLeft
-    const tr = this.points.topRight
-    const br = this.points.bottomRight
-    const bl = this.points.bottomLeft
+    return Rectangle_toSvg(this.points, t)
+  }
 
-    const pts = [
-      `${t.x(tl.x)},${t.y(tl.y)}`,
-      `${t.x(tr.x)},${t.y(tr.y)}`,
-      `${t.x(br.x)},${t.y(br.y)}`,
-      `${t.x(bl.x)},${t.y(bl.y)}`,
-    ].join(" ")
-
-    return `<polygon points="${pts}" />`
+  toGraphicsObject(): GraphicsObject {
+    return Rectangle_toGraphicsObject(this.points)
   }
 }

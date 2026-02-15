@@ -1,6 +1,9 @@
-import type { Constraint, Point, Shape, SvgTransform } from "../core"
-import { Point as SketchPoint } from "../core"
-import { FixedSegmentLength } from "./constraints/FixedSegmentLength"
+import type { GraphicsObject } from "graphics-debug"
+import type { Constraint, Point, Shape, SvgTransform } from "../../core"
+import { Point as SketchPoint } from "../../core"
+import { FixedSegmentLength } from "../constraints/FixedSegmentLength"
+import { Circle_toGraphicsObject } from "./Circle_toGraphicsObject"
+import { Circle_getBounds, Circle_toSvg } from "./Circle_toSvg"
 
 export class Circle implements Shape {
   name: string
@@ -53,27 +56,14 @@ export class Circle implements Shape {
   }
 
   toSvg(t: SvgTransform): string {
-    const center = this.points.center
-    const radiusPoint = this.points.radius
-    const dx = radiusPoint.x - center.x
-    const dy = radiusPoint.y - center.y
-    const radius = Math.sqrt(dx * dx + dy * dy)
+    return Circle_toSvg(this.points, t)
+  }
 
-    return `<circle cx="${t.x(center.x)}" cy="${t.y(center.y)}" r="${radius}" />`
+  toGraphicsObject(): GraphicsObject {
+    return Circle_toGraphicsObject(this.points)
   }
 
   getBounds(): { minX: number; minY: number; maxX: number; maxY: number } {
-    const center = this.points.center
-    const radiusPoint = this.points.radius
-    const dx = radiusPoint.x - center.x
-    const dy = radiusPoint.y - center.y
-    const radius = Math.sqrt(dx * dx + dy * dy)
-
-    return {
-      minX: center.x - radius,
-      minY: center.y - radius,
-      maxX: center.x + radius,
-      maxY: center.y + radius,
-    }
+    return Circle_getBounds(this.points)
   }
 }

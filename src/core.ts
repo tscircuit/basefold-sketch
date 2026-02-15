@@ -1,3 +1,5 @@
+import type { GraphicsObject } from "graphics-debug"
+
 export class Point {
   // Index into the solver variable vector (x at i, y at i+1).
   public __varIndex: number | null = null
@@ -41,6 +43,9 @@ export interface Shape {
 
   // Emits SVG elements (no outer <svg> wrapper).
   toSvg(t: SvgTransform): string
+
+  // Emits graphics-object primitives.
+  toGraphicsObject(): GraphicsObject
 
   // Optional geometric bounds used for SVG framing.
   getBounds?(): {

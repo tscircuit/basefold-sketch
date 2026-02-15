@@ -1,7 +1,10 @@
-import type { Constraint, Point, Shape, SvgTransform } from "../core"
-import { Point as SketchPoint } from "../core"
-import { FixedSegmentLength } from "./constraints/FixedSegmentLength"
-import { PerpendicularAt } from "./constraints/PerpendicularAt"
+import type { GraphicsObject } from "graphics-debug"
+import type { Constraint, Point, Shape, SvgTransform } from "../../core"
+import { Point as SketchPoint } from "../../core"
+import { FixedSegmentLength } from "../constraints/FixedSegmentLength"
+import { PerpendicularAt } from "../constraints/PerpendicularAt"
+import { RightTriangle_toGraphicsObject } from "./RightTriangle_toGraphicsObject"
+import { RightTriangle_toSvg } from "./RightTriangle_toSvg"
 
 export interface RightTriangleOptions {
   name: string
@@ -188,16 +191,10 @@ export class RightTriangle implements Shape {
   }
 
   toSvg(t: SvgTransform): string {
-    const pointAB = this.points.pointAB
-    const pointAC = this.points.pointAC
-    const pointBC = this.points.pointBC
+    return RightTriangle_toSvg(this.points, t)
+  }
 
-    const pts = [
-      `${t.x(pointAB.x)},${t.y(pointAB.y)}`,
-      `${t.x(pointAC.x)},${t.y(pointAC.y)}`,
-      `${t.x(pointBC.x)},${t.y(pointBC.y)}`,
-    ].join(" ")
-
-    return `<polygon points="${pts}" />`
+  toGraphicsObject(): GraphicsObject {
+    return RightTriangle_toGraphicsObject(this.points)
   }
 }

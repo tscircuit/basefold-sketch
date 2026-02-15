@@ -1,4 +1,5 @@
 import type { BuildContext, Constraint, Point, Residual, Shape } from "./core"
+import { createGraphicsObjectFromSketch } from "./createGraphicsObjectFromSketch"
 import { createSvgFromSketch } from "./createSvgFromSketch"
 import { type SolveOptions, solveLM } from "./solver/lm"
 
@@ -9,7 +10,8 @@ function isShape(x: unknown): x is Shape {
     typeof v.name === "string" &&
     typeof v.points === "object" &&
     typeof v.internalConstraints === "function" &&
-    typeof v.toSvg === "function"
+    typeof v.toSvg === "function" &&
+    typeof v.toGraphicsObject === "function"
   )
 }
 
@@ -152,6 +154,12 @@ export class Sketch {
       buildContext: ctx,
       margin: opts?.margin,
       strokeWidth: opts?.strokeWidth,
+    })
+  }
+
+  graphicsObject() {
+    return createGraphicsObjectFromSketch({
+      shapes: this.shapes.values(),
     })
   }
 }

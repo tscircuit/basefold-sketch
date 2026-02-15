@@ -1,10 +1,13 @@
-import type { Constraint, Point, Shape, SvgTransform } from "../core"
-import { Point as SketchPoint } from "../core"
-import { EqualSegmentLengths } from "./constraints/EqualSegmentLengths"
-import { FixedSegmentLength } from "./constraints/FixedSegmentLength"
-import { HorizontalLine } from "./constraints/HorizontalLine"
-import { ParallelLines } from "./constraints/ParallelLines"
-import { VerticalLine } from "./constraints/VerticalLine"
+import type { GraphicsObject } from "graphics-debug"
+import type { Constraint, Point, Shape, SvgTransform } from "../../core"
+import { Point as SketchPoint } from "../../core"
+import { EqualSegmentLengths } from "../constraints/EqualSegmentLengths"
+import { FixedSegmentLength } from "../constraints/FixedSegmentLength"
+import { HorizontalLine } from "../constraints/HorizontalLine"
+import { ParallelLines } from "../constraints/ParallelLines"
+import { VerticalLine } from "../constraints/VerticalLine"
+import { Trapezoid_toGraphicsObject } from "./Trapezoid_toGraphicsObject"
+import { Trapezoid_toSvg } from "./Trapezoid_toSvg"
 
 export type LongBaseOrientation = "bottom" | "top" | "left" | "right" | "none"
 
@@ -215,18 +218,10 @@ export class Trapezoid implements Shape {
   }
 
   toSvg(t: SvgTransform): string {
-    const longBaseStart = this.points.longBaseStart
-    const longBaseEnd = this.points.longBaseEnd
-    const shortBaseEnd = this.points.shortBaseEnd
-    const shortBaseStart = this.points.shortBaseStart
+    return Trapezoid_toSvg(this.points, t)
+  }
 
-    const pts = [
-      `${t.x(longBaseStart.x)},${t.y(longBaseStart.y)}`,
-      `${t.x(longBaseEnd.x)},${t.y(longBaseEnd.y)}`,
-      `${t.x(shortBaseEnd.x)},${t.y(shortBaseEnd.y)}`,
-      `${t.x(shortBaseStart.x)},${t.y(shortBaseStart.y)}`,
-    ].join(" ")
-
-    return `<polygon points="${pts}" />`
+  toGraphicsObject(): GraphicsObject {
+    return Trapezoid_toGraphicsObject(this.points)
   }
 }
