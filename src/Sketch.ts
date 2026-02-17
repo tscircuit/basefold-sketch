@@ -168,8 +168,15 @@ export class Sketch {
   }
 
   graphicsObject() {
+    const ctx: BuildContext = {
+      resolvePoint: (ref: string) => this.resolvePoint(ref),
+      resolveShape: (name: string) => this.resolveShape(name),
+    }
+
     return createGraphicsObjectFromSketch({
       shapes: this.shapes.values(),
+      constraints: this.collectConstraints(),
+      buildContext: ctx,
     })
   }
 }

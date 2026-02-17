@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "bun-match-svg": "^0.0.15",
-    "graphics-debug": "^0.0.83",
+    "graphics-debug": "^0.0.85",
     "tsup": "^8.5.1",
     "typescript": "^5.9.3",
     "vite": "^7.3.1"

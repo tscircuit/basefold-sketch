@@ -50,6 +50,13 @@ test("relative lines snapshot", async () => {
   const distance = Math.sqrt(dx * dx + dy * dy)
   expect(distance).toBeCloseTo(120, 6)
 
+  const graphics = sketch.graphicsObject()
+  expect(graphics.arrows?.length).toBe(1)
+  expect(graphics.arrows?.[0]?.inlineLabel).toBe("120")
+  await (expect(graphics) as any).toMatchGraphicsSvg(import.meta.path, {
+    svgName: "relative-lines01.graphics",
+  })
+
   const svg = sketch.svg({ margin: 50 })
   await (expect(svg) as any).toMatchSvgSnapshot(import.meta.path)
 })

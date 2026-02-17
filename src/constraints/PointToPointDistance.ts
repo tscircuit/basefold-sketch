@@ -1,6 +1,8 @@
+import type { GraphicsObject } from "graphics-debug"
 import type {
   BuildContext,
   Constraint,
+  ConstraintGraphicsContext,
   ConstraintSvgContext,
   Residual,
 } from "../core"
@@ -46,5 +48,22 @@ export class PointToPointDistance implements Constraint {
     const ty = (y1 + y2) / 2 - 10
 
     return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#e76f51" stroke-width="2" stroke-dasharray="5 4" /><text x="${tx}" y="${ty}" fill="#e76f51" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11" text-anchor="middle">${this.distance}</text>`
+  }
+
+  toGraphicsObject(ctx: ConstraintGraphicsContext): GraphicsObject {
+    const p1 = ctx.resolvePoint(this.point1)
+    const p2 = ctx.resolvePoint(this.point2)
+
+    return {
+      arrows: [
+        {
+          start: { x: p1.x, y: p1.y },
+          end: { x: p2.x, y: p2.y },
+          doubleSided: true,
+          color: "#e76f51",
+          inlineLabel: String(this.distance),
+        },
+      ],
+    }
   }
 }

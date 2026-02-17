@@ -1,6 +1,8 @@
+import type { GraphicsObject } from "graphics-debug"
 import type {
   BuildContext,
   Constraint,
+  ConstraintGraphicsContext,
   ConstraintSvgContext,
   Residual,
 } from "../core"
@@ -104,5 +106,31 @@ export class PerpendicularDistance implements Constraint {
     const ty = (y1 + y2) / 2 - 10
 
     return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#e76f51" stroke-width="2" stroke-dasharray="5 4" /><text x="${tx}" y="${ty}" fill="#e76f51" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11" text-anchor="middle">${this.distance}</text>`
+  }
+
+  toGraphicsObject(ctx: ConstraintGraphicsContext): GraphicsObject {
+    const e1 = resolveShapeEdgeRef(this.edge1, ctx.resolveShape)
+    const e2 = resolveShapeEdgeRef(this.edge2, ctx.resolveShape)
+    const a1 = ctx.resolvePoint(e1.point1Ref)
+    const a2 = ctx.resolvePoint(e1.point2Ref)
+    const b1 = ctx.resolvePoint(e2.point1Ref)
+    const b2 = ctx.resolvePoint(e2.point2Ref)
+
+    const m1x = (a1.x + a2.x) / 2
+    const m1y = (a1.y + a2.y) / 2
+    const m2x = (b1.x + b2.x) / 2
+    const m2y = (b1.y + b2.y) / 2
+
+    return {
+      arrows: [
+        {
+          start: { x: m1x, y: m1y },
+          end: { x: m2x, y: m2y },
+          doubleSided: true,
+          color: "#e76f51",
+          inlineLabel: String(this.distance),
+        },
+      ],
+    }
   }
 }

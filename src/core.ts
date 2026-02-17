@@ -34,12 +34,20 @@ export interface ConstraintSvgContext {
   transform: SvgTransform
 }
 
+export interface ConstraintGraphicsContext {
+  resolvePoint(ref: string): Point
+  resolveShape(name: string): Shape
+}
+
 export interface Constraint {
   // Returns one or more scalar residual equations f(vars) = 0.
   buildResiduals(ctx: BuildContext): Residual[]
 
   // Emits SVG elements representing this constraint (optional).
   toSvg?(ctx: ConstraintSvgContext): string
+
+  // Emits graphics-object primitives representing this constraint (optional).
+  toGraphicsObject?(ctx: ConstraintGraphicsContext): GraphicsObject
 }
 
 export interface SvgTransform {

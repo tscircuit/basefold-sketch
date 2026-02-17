@@ -1,6 +1,8 @@
+import type { GraphicsObject } from "graphics-debug"
 import type {
   BuildContext,
   Constraint,
+  ConstraintGraphicsContext,
   ConstraintSvgContext,
   Residual,
 } from "../core"
@@ -172,5 +174,31 @@ export class LineToLineDistance implements Constraint {
     const ty = (y1 + y2) / 2 - 10
 
     return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#e76f51" stroke-width="2" stroke-dasharray="5 4" /><text x="${tx}" y="${ty}" fill="#e76f51" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11" text-anchor="middle">${this.distance}</text>`
+  }
+
+  toGraphicsObject(ctx: ConstraintGraphicsContext): GraphicsObject {
+    const a = resolveLineRef(this.line1)
+    const b = resolveLineRef(this.line2)
+    const a1 = ctx.resolvePoint(a.point1)
+    const a2 = ctx.resolvePoint(a.point2)
+    const b1 = ctx.resolvePoint(b.point1)
+    const b2 = ctx.resolvePoint(b.point2)
+
+    const m1x = (a1.x + a2.x) / 2
+    const m1y = (a1.y + a2.y) / 2
+    const m2x = (b1.x + b2.x) / 2
+    const m2y = (b1.y + b2.y) / 2
+
+    return {
+      arrows: [
+        {
+          start: { x: m1x, y: m1y },
+          end: { x: m2x, y: m2y },
+          doubleSided: true,
+          color: "#e76f51",
+          inlineLabel: String(this.distance),
+        },
+      ],
+    }
   }
 }
