@@ -2,6 +2,7 @@ import type { GraphicsObject } from "graphics-debug"
 import type { Constraint, Point, Shape, SvgTransform } from "../../core"
 import { Point as SketchPoint } from "../../core"
 import { defineShapeEdges } from "../../edge-refs"
+import { definePointRefs } from "../../point-refs"
 import { FixedPointCoordinates } from "../constraints/FixedPointCoordinates"
 import { InfiniteLine_toGraphicsObject } from "./InfiniteLine_toGraphicsObject"
 import { InfiniteLine_toSvg } from "./InfiniteLine_toSvg"
@@ -51,6 +52,7 @@ export class InfiniteLine implements Shape {
 
   name: string
   readonly points: Record<string, Point>
+  readonly refs: Record<string, string>
   readonly edges = defineShapeEdges({
     segment: {
       point1: "start",
@@ -76,6 +78,7 @@ export class InfiniteLine implements Shape {
     const end = new SketchPoint(origin.x + direction.x, origin.y + direction.y)
 
     this.points = { start, end }
+    this.refs = definePointRefs(this.name, this.points, this.edges)
     this._internal = [
       new FixedPointCoordinates(start, origin.x, origin.y),
       new FixedPointCoordinates(end, end.x, end.y),

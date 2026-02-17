@@ -50,6 +50,7 @@ export interface SvgTransform {
 export interface Shape {
   name: string
   readonly points: Record<string, Point>
+  readonly refs: Record<string, string>
   readonly edges: Record<string, EdgeReferenceDefinition>
 
   // Constraints that define/maintain the shape's intrinsic geometry.

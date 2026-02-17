@@ -71,6 +71,37 @@ await sketch.solve()
 
 `RightTriangle` edge selectors for `PerpendicularDistance` are `base`, `altitude`, `hypotenuse`, and aliases `a`, `b`, `c` (`ab`, `ac`, `bc` are also supported).
 `RightTriangle` does not take `x`/`y`; position it with constraints (for example `FixedPoint` on `pointAB`).
+All shapes expose `shape.refs.<name>` as a shortcut for point and edge reference strings (for example `triangle.refs.pointAB` -> `"T1.pointAB"`, `rectangle.refs.rightEdge` -> `"R1.rightEdge"`).
+
+```tsx
+import { Sketch, constraints, shapes } from "@basefold/sketch"
+
+const sketch = new Sketch()
+
+const triangle = new shapes.RightTriangle({
+  name: "T1",
+  acLength: 40,
+  hypotenuseLength: 50,
+})
+
+sketch.add(triangle)
+sketch.add(
+  new constraints.FixedPoint({
+    point: triangle.refs.pointAB,
+    x: 0,
+    y: 0,
+  }),
+)
+sketch.add(
+  new constraints.Distance({
+    point1: triangle.refs.pointAB,
+    point2: triangle.refs.pointAC,
+    distance: 30,
+  }),
+)
+
+await sketch.solve()
+```
 
 ```tsx
 import { Sketch, constraints, shapes } from "@basefold/sketch"

@@ -8,6 +8,7 @@ import type {
 } from "../../core"
 import { Point as SketchPoint } from "../../core"
 import { defineShapeEdges } from "../../edge-refs"
+import { definePointRefs } from "../../point-refs"
 import { EqualSegmentLengths } from "../constraints/EqualSegmentLengths"
 import { FixedSegmentLength } from "../constraints/FixedSegmentLength"
 import { HorizontalLine } from "../constraints/HorizontalLine"
@@ -39,6 +40,7 @@ function addLineAlias(
 export class Trapezoid implements Shape {
   name: string
   readonly points: Record<string, Point>
+  readonly refs: Record<string, string>
   readonly edges: Record<string, EdgeReferenceDefinition>
   private _internal: Constraint[]
 
@@ -284,6 +286,7 @@ export class Trapezoid implements Shape {
     }
 
     this.edges = defineShapeEdges(edgeDefs)
+    this.refs = definePointRefs(this.name, this.points, this.edges)
     this._internal = [
       new ParallelLines(
         longBaseStart,

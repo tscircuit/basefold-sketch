@@ -2,6 +2,7 @@ import type { GraphicsObject } from "graphics-debug"
 import type { Constraint, Point, Shape, SvgTransform } from "../../core"
 import { Point as SketchPoint } from "../../core"
 import { defineShapeEdges } from "../../edge-refs"
+import { definePointRefs } from "../../point-refs"
 import { FixedSegmentLength } from "../constraints/FixedSegmentLength"
 import { PerpendicularAt } from "../constraints/PerpendicularAt"
 import { RightTriangle_toGraphicsObject } from "./RightTriangle_toGraphicsObject"
@@ -82,6 +83,7 @@ function ensureHypotenuseCompatibility(
 export class RightTriangle implements Shape {
   name: string
   readonly points: Record<string, Point>
+  readonly refs: Record<string, string>
   readonly edges = defineShapeEdges({
     base: {
       point1: "pointAB",
@@ -217,6 +219,7 @@ export class RightTriangle implements Shape {
     const pointBC = new SketchPoint(0, altitudeInit)
 
     this.points = { pointAB, pointAC, pointBC }
+    this.refs = definePointRefs(this.name, this.points, this.edges)
     this._internal = [new PerpendicularAt(pointAB, pointAC, pointBC)]
 
     if (baseLength !== undefined) {

@@ -2,6 +2,7 @@ import type { GraphicsObject } from "graphics-debug"
 import type { Constraint, Point, Shape, SvgTransform } from "../../core"
 import { Point as SketchPoint } from "../../core"
 import { defineShapeEdges } from "../../edge-refs"
+import { definePointRefs } from "../../point-refs"
 import { FixedSegmentLength } from "../constraints/FixedSegmentLength"
 import { HorizontalLine } from "../constraints/HorizontalLine"
 import { VerticalLine } from "../constraints/VerticalLine"
@@ -11,6 +12,7 @@ import { Oval_getBounds, Oval_toSvg } from "./Oval_toSvg"
 export class Oval implements Shape {
   name: string
   readonly points: Record<string, Point>
+  readonly refs: Record<string, string>
   readonly edges = defineShapeEdges({})
   private _internal: Constraint[]
 
@@ -53,6 +55,7 @@ export class Oval implements Shape {
       radiusX,
       radiusY,
     }
+    this.refs = definePointRefs(this.name, this.points, this.edges)
 
     this._internal = [
       new HorizontalLine(center, radiusX),

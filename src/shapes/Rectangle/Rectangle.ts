@@ -2,6 +2,7 @@ import type { GraphicsObject } from "graphics-debug"
 import type { Constraint, Point, Shape, SvgTransform } from "../../core"
 import { Point as SketchPoint } from "../../core"
 import { defineShapeEdges } from "../../edge-refs"
+import { definePointRefs } from "../../point-refs"
 import { FixedSegmentLength } from "../constraints/FixedSegmentLength"
 import { ParallelogramClosure } from "../constraints/ParallelogramClosure"
 import { PerpendicularAt } from "../constraints/PerpendicularAt"
@@ -11,6 +12,7 @@ import { Rectangle_toSvg } from "./Rectangle_toSvg"
 export class Rectangle implements Shape {
   name: string
   readonly points: Record<string, Point>
+  readonly refs: Record<string, string>
   readonly edges = defineShapeEdges({
     left: {
       point1: "topLeft",
@@ -95,6 +97,7 @@ export class Rectangle implements Shape {
     const bottomRight = new SketchPoint(x + w, y - h)
 
     this.points = { topLeft, topRight, bottomLeft, bottomRight }
+    this.refs = definePointRefs(this.name, this.points, this.edges)
 
     this._internal = [
       new ParallelogramClosure(topLeft, topRight, bottomLeft, bottomRight),
