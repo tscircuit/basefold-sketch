@@ -27,6 +27,64 @@ export interface TrapezoidOptions {
   longBaseOrientation?: LongBaseOrientation
 }
 
+type TrapezoidRequiredPointName =
+  | "longBaseStart"
+  | "longBaseEnd"
+  | "shortBaseStart"
+  | "shortBaseEnd"
+  | "longBase.start"
+  | "longBase.end"
+  | "shortBase.start"
+  | "shortBase.end"
+  | "leg1.start"
+  | "leg1.end"
+  | "leg2.start"
+  | "leg2.end"
+type TrapezoidOptionalPointName =
+  | "bottommostBase.start"
+  | "bottommostBase.end"
+  | "topmostBase.start"
+  | "topmostBase.end"
+  | "leftmostLeg.start"
+  | "leftmostLeg.end"
+  | "rightmostLeg.start"
+  | "rightmostLeg.end"
+  | "leftmostBase.start"
+  | "leftmostBase.end"
+  | "rightmostBase.start"
+  | "rightmostBase.end"
+  | "topmostLeg.start"
+  | "topmostLeg.end"
+  | "bottommostLeg.start"
+  | "bottommostLeg.end"
+type TrapezoidPointMap = Record<TrapezoidRequiredPointName, Point> &
+  Partial<Record<TrapezoidOptionalPointName, Point>>
+
+type TrapezoidRequiredEdgeName = "longBase" | "shortBase" | "leg1" | "leg2"
+type TrapezoidOptionalEdgeName =
+  | "bottommostBase"
+  | "topmostBase"
+  | "leftmostLeg"
+  | "rightmostLeg"
+  | "leftmostBase"
+  | "rightmostBase"
+  | "topmostLeg"
+  | "bottommostLeg"
+type TrapezoidEdgeMap = Record<
+  TrapezoidRequiredEdgeName,
+  EdgeReferenceDefinition
+> &
+  Partial<Record<TrapezoidOptionalEdgeName, EdgeReferenceDefinition>>
+
+type TrapezoidRequiredRefName =
+  | TrapezoidRequiredPointName
+  | TrapezoidRequiredEdgeName
+type TrapezoidOptionalRefName =
+  | TrapezoidOptionalPointName
+  | TrapezoidOptionalEdgeName
+type TrapezoidRefMap = Record<TrapezoidRequiredRefName, string> &
+  Partial<Record<TrapezoidOptionalRefName, string>>
+
 function addLineAlias(
   points: Record<string, Point>,
   line: string,
@@ -39,9 +97,9 @@ function addLineAlias(
 
 export class Trapezoid implements Shape {
   name: string
-  readonly points: Record<string, Point>
-  readonly refs: Record<string, string>
-  readonly edges: Record<string, EdgeReferenceDefinition>
+  readonly points: TrapezoidPointMap
+  readonly refs: TrapezoidRefMap
+  readonly edges: TrapezoidEdgeMap
   private _internal: Constraint[]
 
   constructor(opts: TrapezoidOptions) {
@@ -184,7 +242,7 @@ export class Trapezoid implements Shape {
       }
     }
 
-    this.points = points
+    this.points = points as TrapezoidPointMap
 
     const edgeDefs: Record<string, EdgeReferenceDefinition> = {
       longBase: {
@@ -285,8 +343,12 @@ export class Trapezoid implements Shape {
       }
     }
 
-    this.edges = defineShapeEdges(edgeDefs)
-    this.refs = definePointRefs(this.name, this.points, this.edges)
+    this.edges = defineShapeEdges(edgeDefs) as TrapezoidEdgeMap
+    this.refs = definePointRefs(
+      this.name,
+      this.points,
+      this.edges,
+    ) as TrapezoidRefMap
     this._internal = [
       new ParallelLines(
         longBaseStart,

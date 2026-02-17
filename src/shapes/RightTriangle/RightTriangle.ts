@@ -1,5 +1,11 @@
 import type { GraphicsObject } from "graphics-debug"
-import type { Constraint, Point, Shape, SvgTransform } from "../../core"
+import type {
+  Constraint,
+  EdgeReferenceDefinition,
+  Point,
+  Shape,
+  SvgTransform,
+} from "../../core"
 import { Point as SketchPoint } from "../../core"
 import { defineShapeEdges } from "../../edge-refs"
 import { definePointRefs } from "../../point-refs"
@@ -31,6 +37,19 @@ type LengthAlias =
   | "abLength"
   | "acLength"
   | "bcLength"
+
+type RightTrianglePointName = "pointAB" | "pointAC" | "pointBC"
+type RightTriangleEdgeName =
+  | "base"
+  | "altitude"
+  | "hypotenuse"
+  | "a"
+  | "b"
+  | "c"
+  | "ab"
+  | "ac"
+  | "bc"
+type RightTriangleRefName = RightTrianglePointName | RightTriangleEdgeName
 
 function approxEqual(a: number, b: number): boolean {
   const scale = Math.max(1, Math.abs(a), Math.abs(b))
@@ -82,55 +101,56 @@ function ensureHypotenuseCompatibility(
 
 export class RightTriangle implements Shape {
   name: string
-  readonly points: Record<string, Point>
-  readonly refs: Record<string, string>
-  readonly edges = defineShapeEdges({
-    base: {
-      point1: "pointAB",
-      point2: "pointAC",
-      interiorPoint: "pointBC",
-    },
-    altitude: {
-      point1: "pointAB",
-      point2: "pointBC",
-      interiorPoint: "pointAC",
-    },
-    hypotenuse: {
-      point1: "pointAC",
-      point2: "pointBC",
-      interiorPoint: "pointAB",
-    },
-    a: {
-      point1: "pointAB",
-      point2: "pointAC",
-      interiorPoint: "pointBC",
-    },
-    b: {
-      point1: "pointAB",
-      point2: "pointBC",
-      interiorPoint: "pointAC",
-    },
-    c: {
-      point1: "pointAC",
-      point2: "pointBC",
-      interiorPoint: "pointAB",
-    },
-    ab: {
-      point1: "pointAB",
-      point2: "pointAC",
-      interiorPoint: "pointBC",
-    },
-    ac: {
-      point1: "pointAB",
-      point2: "pointBC",
-      interiorPoint: "pointAC",
-    },
-    bc: {
-      point1: "pointAC",
-      point2: "pointBC",
-      interiorPoint: "pointAB",
-    },
-  })
+  readonly points: Record<RightTrianglePointName, Point>
+  readonly refs: Record<RightTriangleRefName, string>
+  readonly edges: Record<RightTriangleEdgeName, EdgeReferenceDefinition> =
+    defineShapeEdges({
+      base: {
+        point1: "pointAB",
+        point2: "pointAC",
+        interiorPoint: "pointBC",
+      },
+      altitude: {
+        point1: "pointAB",
+        point2: "pointBC",
+        interiorPoint: "pointAC",
+      },
+      hypotenuse: {
+        point1: "pointAC",
+        point2: "pointBC",
+        interiorPoint: "pointAB",
+      },
+      a: {
+        point1: "pointAB",
+        point2: "pointAC",
+        interiorPoint: "pointBC",
+      },
+      b: {
+        point1: "pointAB",
+        point2: "pointBC",
+        interiorPoint: "pointAC",
+      },
+      c: {
+        point1: "pointAC",
+        point2: "pointBC",
+        interiorPoint: "pointAB",
+      },
+      ab: {
+        point1: "pointAB",
+        point2: "pointAC",
+        interiorPoint: "pointBC",
+      },
+      ac: {
+        point1: "pointAB",
+        point2: "pointBC",
+        interiorPoint: "pointAC",
+      },
+      bc: {
+        point1: "pointAC",
+        point2: "pointBC",
+        interiorPoint: "pointAB",
+      },
+    })
   private _internal: Constraint[]
 
   constructor(opts: RightTriangleOptions) {

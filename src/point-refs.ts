@@ -2,8 +2,18 @@ import type { EdgeReferenceDefinition, Point } from "./core"
 
 export function definePointRefs(
   shapeName: string,
-  points: Record<string, Point>,
-  edges?: Record<string, EdgeReferenceDefinition>,
+  points: Readonly<Record<string, Point>>,
+  edges?: Readonly<Record<string, EdgeReferenceDefinition>>,
+): Record<string, string>
+export function definePointRefs<P extends string, E extends string>(
+  shapeName: string,
+  points: Readonly<Record<P, Point>>,
+  edges?: Readonly<Record<E, EdgeReferenceDefinition>>,
+): Record<P | E, string>
+export function definePointRefs(
+  shapeName: string,
+  points: Readonly<Record<string, Point>>,
+  edges?: Readonly<Record<string, EdgeReferenceDefinition>>,
 ): Record<string, string> {
   const refs: Record<string, string> = {}
 

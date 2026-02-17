@@ -1,5 +1,11 @@
 import type { GraphicsObject } from "graphics-debug"
-import type { Constraint, Point, Shape, SvgTransform } from "../../core"
+import type {
+  Constraint,
+  EdgeReferenceDefinition,
+  Point,
+  Shape,
+  SvgTransform,
+} from "../../core"
 import { Point as SketchPoint } from "../../core"
 import { defineShapeEdges } from "../../edge-refs"
 import { definePointRefs } from "../../point-refs"
@@ -9,52 +15,65 @@ import { PerpendicularAt } from "../constraints/PerpendicularAt"
 import { Rectangle_toGraphicsObject } from "./Rectangle_toGraphicsObject"
 import { Rectangle_toSvg } from "./Rectangle_toSvg"
 
+type RectanglePointName = "topLeft" | "topRight" | "bottomLeft" | "bottomRight"
+type RectangleEdgeName =
+  | "left"
+  | "leftEdge"
+  | "top"
+  | "topEdge"
+  | "right"
+  | "rightEdge"
+  | "bottom"
+  | "bottomEdge"
+type RectangleRefName = RectanglePointName | RectangleEdgeName
+
 export class Rectangle implements Shape {
   name: string
-  readonly points: Record<string, Point>
-  readonly refs: Record<string, string>
-  readonly edges = defineShapeEdges({
-    left: {
-      point1: "topLeft",
-      point2: "bottomLeft",
-      interiorPoint: "topRight",
-    },
-    leftEdge: {
-      point1: "topLeft",
-      point2: "bottomLeft",
-      interiorPoint: "topRight",
-    },
-    top: {
-      point1: "topLeft",
-      point2: "topRight",
-      interiorPoint: "bottomLeft",
-    },
-    topEdge: {
-      point1: "topLeft",
-      point2: "topRight",
-      interiorPoint: "bottomLeft",
-    },
-    right: {
-      point1: "topRight",
-      point2: "bottomRight",
-      interiorPoint: "topLeft",
-    },
-    rightEdge: {
-      point1: "topRight",
-      point2: "bottomRight",
-      interiorPoint: "topLeft",
-    },
-    bottom: {
-      point1: "bottomLeft",
-      point2: "bottomRight",
-      interiorPoint: "topLeft",
-    },
-    bottomEdge: {
-      point1: "bottomLeft",
-      point2: "bottomRight",
-      interiorPoint: "topLeft",
-    },
-  })
+  readonly points: Record<RectanglePointName, Point>
+  readonly refs: Record<RectangleRefName, string>
+  readonly edges: Record<RectangleEdgeName, EdgeReferenceDefinition> =
+    defineShapeEdges({
+      left: {
+        point1: "topLeft",
+        point2: "bottomLeft",
+        interiorPoint: "topRight",
+      },
+      leftEdge: {
+        point1: "topLeft",
+        point2: "bottomLeft",
+        interiorPoint: "topRight",
+      },
+      top: {
+        point1: "topLeft",
+        point2: "topRight",
+        interiorPoint: "bottomLeft",
+      },
+      topEdge: {
+        point1: "topLeft",
+        point2: "topRight",
+        interiorPoint: "bottomLeft",
+      },
+      right: {
+        point1: "topRight",
+        point2: "bottomRight",
+        interiorPoint: "topLeft",
+      },
+      rightEdge: {
+        point1: "topRight",
+        point2: "bottomRight",
+        interiorPoint: "topLeft",
+      },
+      bottom: {
+        point1: "bottomLeft",
+        point2: "bottomRight",
+        interiorPoint: "topLeft",
+      },
+      bottomEdge: {
+        point1: "bottomLeft",
+        point2: "bottomRight",
+        interiorPoint: "topLeft",
+      },
+    })
   private _internal: Constraint[]
 
   constructor(opts: {

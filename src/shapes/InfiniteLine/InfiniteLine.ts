@@ -1,5 +1,11 @@
 import type { GraphicsObject } from "graphics-debug"
-import type { Constraint, Point, Shape, SvgTransform } from "../../core"
+import type {
+  Constraint,
+  EdgeReferenceDefinition,
+  Point,
+  Shape,
+  SvgTransform,
+} from "../../core"
 import { Point as SketchPoint } from "../../core"
 import { defineShapeEdges } from "../../edge-refs"
 import { definePointRefs } from "../../point-refs"
@@ -24,6 +30,10 @@ export interface InfiniteLineOptions {
   }
   direction: InfiniteLineDirection
 }
+
+type InfiniteLinePointName = "start" | "end"
+type InfiniteLineEdgeName = "segment"
+type InfiniteLineRefName = InfiniteLinePointName | InfiniteLineEdgeName
 
 function directionToVector(direction: InfiniteLineDirection): {
   x: number
@@ -51,14 +61,15 @@ export class InfiniteLine implements Shape {
   private static nextAutoNameId = 1
 
   name: string
-  readonly points: Record<string, Point>
-  readonly refs: Record<string, string>
-  readonly edges = defineShapeEdges({
-    segment: {
-      point1: "start",
-      point2: "end",
-    },
-  })
+  readonly points: Record<InfiniteLinePointName, Point>
+  readonly refs: Record<InfiniteLineRefName, string>
+  readonly edges: Record<InfiniteLineEdgeName, EdgeReferenceDefinition> =
+    defineShapeEdges({
+      segment: {
+        point1: "start",
+        point2: "end",
+      },
+    })
   private _internal: Constraint[]
 
   constructor(opts: InfiniteLineOptions) {

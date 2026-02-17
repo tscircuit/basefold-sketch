@@ -1,5 +1,11 @@
 import type { GraphicsObject } from "graphics-debug"
-import type { Constraint, Point, Shape, SvgTransform } from "../../core"
+import type {
+  Constraint,
+  EdgeReferenceDefinition,
+  Point,
+  Shape,
+  SvgTransform,
+} from "../../core"
 import { Point as SketchPoint } from "../../core"
 import { defineShapeEdges } from "../../edge-refs"
 import { definePointRefs } from "../../point-refs"
@@ -20,18 +26,23 @@ export interface LineOptions {
   vertical?: boolean
 }
 
+type LinePointName = "start" | "end"
+type LineEdgeName = "segment"
+type LineRefName = LinePointName | LineEdgeName
+
 export class Line implements Shape {
   private static nextAutoNameId = 1
 
   name: string
-  readonly points: Record<string, Point>
-  readonly refs: Record<string, string>
-  readonly edges = defineShapeEdges({
-    segment: {
-      point1: "start",
-      point2: "end",
-    },
-  })
+  readonly points: Record<LinePointName, Point>
+  readonly refs: Record<LineRefName, string>
+  readonly edges: Record<LineEdgeName, EdgeReferenceDefinition> =
+    defineShapeEdges({
+      segment: {
+        point1: "start",
+        point2: "end",
+      },
+    })
   private _internal: Constraint[]
 
   constructor(opts: LineOptions = {}) {

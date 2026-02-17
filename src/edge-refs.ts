@@ -40,9 +40,9 @@ export function resolveShapeEdgeRef(
   }
 }
 
-export function defineShapeEdges(
-  defs: Readonly<Record<string, EdgeReferenceDefinition>>,
-): Record<string, EdgeReferenceDefinition> {
+export function defineShapeEdges<K extends string>(
+  defs: Readonly<Record<K, EdgeReferenceDefinition>>,
+): Record<K, EdgeReferenceDefinition> {
   return Object.freeze({ ...defs })
 }
 
