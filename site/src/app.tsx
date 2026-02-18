@@ -419,7 +419,6 @@ export function App() {
       const nextGraphics = await executeCode(code)
       setGraphics(nextGraphics)
     } catch (runError) {
-      setGraphics(null)
       setError(formatError(runError))
     } finally {
       setIsRunning(false)
@@ -633,19 +632,16 @@ export function App() {
 
         <section className="panel preview-panel">
           <p className="panel-title">Preview</p>
-          {error ? (
-            <pre className="error-box">{error}</pre>
-          ) : graphics ? (
-            <div className="graphics-stage">
+          <div className="graphics-stage">
+            {graphics ? (
               <InteractiveGraphics
                 key={graphicsKey}
                 graphics={graphics}
                 height={560}
               />
-            </div>
-          ) : (
-            <div className="graphics-stage" />
-          )}
+            ) : null}
+            {error ? <pre className="error-box">{error}</pre> : null}
+          </div>
         </section>
       </main>
 
