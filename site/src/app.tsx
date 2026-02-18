@@ -51,6 +51,7 @@ export function App() {
     useState<CompletionPosition | null>(null)
   const [constructorHint, setConstructorHint] =
     useState<ConstructorHint | null>(null)
+  const [isPointerInTextarea, setIsPointerInTextarea] = useState<boolean>(false)
   const editorBodyRef = useRef<HTMLDivElement | null>(null)
   const textareaRef = useRef<HTMLTextAreaElement | null>(null)
 
@@ -256,13 +257,24 @@ export function App() {
                 textareaRef.current = document.getElementById(
                   editorTextareaId,
                 ) as HTMLTextAreaElement | null
+                setIsPointerInTextarea(true)
                 updateEditorAssist(code)
               }}
               onFocus={() => {
                 textareaRef.current = document.getElementById(
                   editorTextareaId,
                 ) as HTMLTextAreaElement | null
+                setIsPointerInTextarea(true)
                 updateEditorAssist(code)
+              }}
+              onMouseMove={(event) => {
+                if (event.target instanceof HTMLTextAreaElement) {
+                  textareaRef.current = event.target
+                }
+                setIsPointerInTextarea(true)
+              }}
+              onMouseLeave={() => {
+                setIsPointerInTextarea(false)
               }}
               onKeyDown={(event) => {
                 if (event.key === "Escape") {
@@ -336,7 +348,7 @@ export function App() {
               textareaId={editorTextareaId}
               value={code}
             />
-            {constructorHint ? (
+            {isPointerInTextarea && constructorHint ? (
               <div className="signature-hint" role="status">
                 <strong>
                   {constructorHint.namespace}.{constructorHint.name}
@@ -358,7 +370,7 @@ export function App() {
                 </div>
               </div>
             ) : null}
-            {hasCompletions ? (
+            {isPointerInTextarea && hasCompletions ? (
               <div
                 className="autocomplete-popover"
                 role="listbox"
