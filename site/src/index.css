@@ -165,6 +165,47 @@ body {
   z-index: 5;
 }
 
+.signature-hint {
+  backdrop-filter: blur(6px);
+  background: rgba(252, 251, 246, 0.96);
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.55rem;
+  box-shadow: 0 10px 24px rgba(55, 43, 16, 0.12);
+  color: #27304d;
+  display: grid;
+  font-family: "IBM Plex Mono", "Courier New", monospace;
+  gap: 0.45rem;
+  max-width: calc(100% - 1.2rem);
+  padding: 0.6rem 0.75rem;
+  position: absolute;
+  right: 0.6rem;
+  top: 0.6rem;
+  z-index: 4;
+}
+
+.signature-hint > strong {
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+}
+
+.signature-params {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.signature-param {
+  background: rgba(23, 77, 134, 0.08);
+  border-radius: 0.4rem;
+  font-size: 0.7rem;
+  padding: 0.12rem 0.35rem;
+}
+
+.signature-param.active {
+  background: rgba(1, 101, 105, 0.16);
+  color: #083f49;
+}
+
 .autocomplete-item {
   align-items: center;
   background: transparent;
