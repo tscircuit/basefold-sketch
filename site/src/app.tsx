@@ -652,6 +652,8 @@ export function App() {
       <footer className="page-footer">
         <a href="https://github.com/tscircuit/basefold-sketch">GitHub</a>
         <span aria-hidden>&middot;</span>
+        <a href="https://basefold.com">basefold</a>
+        <span aria-hidden>&middot;</span>
         <a href="https://tscircuit.com">tscircuit</a>
       </footer>
     </div>
