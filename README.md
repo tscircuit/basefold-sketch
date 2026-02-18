@@ -126,7 +126,7 @@ Points: `center`, `radius`
 ```ts
 const sketch = new Sketch()
 
-const circle = new shapes.Circle({ name: "C1", cx: 0, cy: 0, radius: 50 })
+const circle = new shapes.Circle({ name: "C1", radius: 50 })
 
 sketch.add(circle)
 sketch.add(new constraints.FixedPoint({ point: "C1.center", x: 0, y: 0 }))
@@ -161,7 +161,7 @@ Points: `center`, `radiusX`, `radiusY`
 ```ts
 const sketch = new Sketch()
 
-const oval = new shapes.Oval({ name: "O1", cx: 0, cy: 0, rx: 60, ry: 30 })
+const oval = new shapes.Oval({ name: "O1", rx: 60, ry: 30 })
 
 sketch.add(oval)
 sketch.add(new constraints.FixedPoint({ point: "O1.center", x: 0, y: 0 }))
@@ -408,7 +408,7 @@ Make a line tangent to a circle (the line just touches the circle at one point).
 ```ts
 const sketch = new Sketch()
 
-const circle = new shapes.Circle({ name: "C1", cx: 0, cy: 0, radius: 40 })
+const circle = new shapes.Circle({ name: "C1", radius: 40 })
 const line = new shapes.Line({ name: "L1" })
 
 sketch.add(circle)

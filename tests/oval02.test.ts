@@ -5,8 +5,6 @@ test("Oval applies axis and fixed radii internal constraints", async () => {
   const sketch = new Sketch()
   const oval = new shapes.Oval({
     name: "O1",
-    cx: 0,
-    cy: 0,
     rx: 60,
     ry: 30,
   })

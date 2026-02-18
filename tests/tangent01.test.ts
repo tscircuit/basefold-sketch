@@ -6,8 +6,6 @@ test("line is tangent to circle", async () => {
 
   const circle = new shapes.Circle({
     name: "C1",
-    cx: 0,
-    cy: 0,
     radius: 40,
   })
 

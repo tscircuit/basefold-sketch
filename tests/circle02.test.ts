@@ -5,8 +5,6 @@ test("Circle applies fixed radius internal constraint", async () => {
   const sketch = new Sketch()
   const circle = new shapes.Circle({
     name: "C1",
-    cx: 0,
-    cy: 0,
     radius: 50,
   })
 
