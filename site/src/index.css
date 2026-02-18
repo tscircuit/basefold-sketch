@@ -130,6 +130,13 @@ body {
   overflow: hidden;
 }
 
+.editor-body {
+  display: grid;
+  flex: 1;
+  min-height: 0;
+  position: relative;
+}
+
 .code-editor {
   color: #27304d;
   flex: 1;
@@ -141,6 +148,47 @@ body {
 
 .code-editor-input:focus {
   outline: none;
+}
+
+.autocomplete-popover {
+  backdrop-filter: blur(6px);
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.55rem;
+  box-shadow: 0 10px 24px rgba(55, 43, 16, 0.16);
+  display: grid;
+  gap: 0.15rem;
+  max-width: 24rem;
+  position: absolute;
+  min-width: 11rem;
+  width: min(90%, 18rem);
+  z-index: 5;
+}
+
+.autocomplete-item {
+  align-items: center;
+  background: transparent;
+  border: none;
+  color: #27304d;
+  cursor: pointer;
+  display: flex;
+  font-family: "IBM Plex Mono", "Courier New", monospace;
+  font-size: 0.78rem;
+  justify-content: space-between;
+  padding: 0.45rem 0.6rem;
+  text-align: left;
+  width: 100%;
+}
+
+.autocomplete-item small {
+  color: hsl(var(--muted-foreground));
+  font-size: 0.66rem;
+  letter-spacing: 0.02em;
+}
+
+.autocomplete-item:hover,
+.autocomplete-item.active {
+  background: rgba(23, 77, 134, 0.08);
 }
 
 .token.keyword {
