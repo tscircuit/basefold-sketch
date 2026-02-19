@@ -10,6 +10,10 @@ Guidance for coding agents working in `@basefold/sketch`.
 - Main source: `src/`.
 - Tests: `tests/` (Bun test runner).
 
+## Prefer XY-less positioning
+
+- Use constraints instead of setting x y positions
+
 ## Repository Rules Files
 
 - Cursor rules: none found (`.cursorrules` and `.cursor/rules/` not present).

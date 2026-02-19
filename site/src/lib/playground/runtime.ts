@@ -43,7 +43,7 @@ return (async () => {
     throw new Error("'sketch' must be an instance of Sketch.");
   }
 
-  await sketch.solve();
+  await sketch.solve({ maxIterations: 400, maxInnerIterations: 20, lambda: 1 });
   return sketch.graphicsObject();
 })();`,
   ) as (api: SketchApi) => Promise<unknown>
