@@ -52,6 +52,7 @@ const svg = sketch.svg({ margin: 50 })
 |-------|--------|-------|-|
 | [Rectangle](#rectangle) | `topLeft` `topRight` `bottomLeft` `bottomRight` | `top` `right` `bottom` `left` | [Details](#rectangle) |
 | [Circle](#circle) | `center` `radius` | -- | [Details](#circle) |
+| [Arc](#arc) | `center` `start` `end` | `segment` | [Details](#arc) |
 | [Line](#line) | `start` `end` | `segment` | [Details](#line) |
 | [Oval](#oval) | `center` `radiusX` `radiusY` | -- | [Details](#oval) |
 | [RightTriangle](#righttriangle) | `pointAB` `pointAC` `pointBC` | `base` `altitude` `hypotenuse` | [Details](#righttriangle) |
@@ -136,6 +137,60 @@ await sketch.solve()
 ```
 
 ![Circle](tests/__snapshots__/circle02.snap.svg)
+
+### Arc
+
+Points: `center`, `start`, `end`
+Edges: `segment`
+
+Use `Arc` for profile cuts that need curvature (for example, a ball-screw groove before revolve). The arc is defined by center, radius, start angle, end angle, and optional `clockwise` direction.
+
+```ts
+const sketch = new Sketch()
+
+const axis = new shapes.Axis({
+  name: "Axis",
+  origin: { x: 0, y: 20 },
+  direction: "y-",
+})
+
+const topFlank = new shapes.Line({
+  name: "L1",
+  x1: 0,
+  y1: 20,
+  x2: 28,
+  y2: 7,
+})
+
+const groove = new shapes.Arc({
+  name: "A1",
+  cx: 24,
+  cy: 0,
+  radius: 8,
+  startAngleDeg: 60,
+  endAngleDeg: -60,
+  clockwise: true,
+})
+
+const bottomFlank = new shapes.Line({
+  name: "L2",
+  x1: 28,
+  y1: -7,
+  x2: 0,
+  y2: -20,
+})
+
+sketch.add(axis)
+sketch.add(topFlank)
+sketch.add(groove)
+sketch.add(bottomFlank)
+sketch.add(new constraints.Coincident({ point1: "L1.end", point2: "A1.start" }))
+sketch.add(new constraints.Coincident({ point1: "A1.end", point2: "L2.start" }))
+
+await sketch.solve()
+```
+
+![Arc](tests/__snapshots__/arc01.snap.svg)
 
 ### Line
 

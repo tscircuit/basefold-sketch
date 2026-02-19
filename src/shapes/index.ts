@@ -1,3 +1,4 @@
+export { Arc } from "./Arc/Arc"
 export { Axis } from "./Axis/Axis"
 export { Circle } from "./Circle/Circle"
 export { InfiniteLine } from "./InfiniteLine/InfiniteLine"
@@ -27,6 +28,7 @@ const LineFactoryImpl = function Line(
 
 LineFactoryImpl.prototype = LineShape.prototype
 
+export type { ArcOptions } from "./Arc/Arc"
 export type { AxisOptions } from "./Axis/Axis"
 export type {
   InfiniteLineDirection,
